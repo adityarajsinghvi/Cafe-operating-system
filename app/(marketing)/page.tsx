@@ -471,7 +471,7 @@ function CustomersMock() {
           ))}
         </div>
       </div>
-      <div className="divide-y" style={{ divideColor: C.border }}>
+      <div className="divide-y" style={{ borderColor: C.border }}>
         {[
           { name: "Priya Sharma", phone: "+91 98765 43210", pts: 340, fav: "Cappuccino", visits: 12 },
           { name: "Rahul Mehta", phone: "+91 87654 32109", pts: 180, fav: "Cold Brew", visits: 7 },

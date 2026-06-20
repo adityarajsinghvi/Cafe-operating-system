@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition, type ComponentType } from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import type { LucideProps } from "lucide-react";
 import { BellRing, Check, Droplets, Loader2, Receipt, RefreshCw } from "lucide-react";
 
 import { useRestaurantRealtime } from "@/hooks/use-restaurant-realtime";
@@ -19,7 +20,7 @@ const C = {
   inkMuted: "#83827d",
 };
 
-const REQUEST_ICONS: Record<ServiceRequestType, ComponentType<{ className?: string }>> = {
+const REQUEST_ICONS: Record<ServiceRequestType, React.ComponentType<LucideProps>> = {
   waiter: BellRing,
   water: Droplets,
   bill: Receipt,

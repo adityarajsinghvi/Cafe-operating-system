@@ -338,6 +338,7 @@ export interface Database {
           session_token: string;
           expires_at: string;
           created_at: string;
+          customer_id: string | null;
           bill_payment_status: BillPaymentStatus | null;
           bill_paid_at: string | null;
           closed_at: string | null;
@@ -349,6 +350,7 @@ export interface Database {
           session_token?: string;
           expires_at?: string;
           created_at?: string;
+          customer_id?: string | null;
           bill_payment_status?: BillPaymentStatus | null;
           bill_paid_at?: string | null;
           closed_at?: string | null;
@@ -360,6 +362,7 @@ export interface Database {
           session_token?: string;
           expires_at?: string;
           created_at?: string;
+          customer_id?: string | null;
           bill_payment_status?: BillPaymentStatus | null;
           bill_paid_at?: string | null;
           closed_at?: string | null;

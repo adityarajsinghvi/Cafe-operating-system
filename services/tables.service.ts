@@ -383,7 +383,7 @@ export async function getSessionByToken(sessionToken: string) {
     id: session.id,
     restaurantId: session.restaurant_id,
     tableId: session.table_id,
-    customerId: (session as any).customer_id ?? null,
+    customerId: session.customer_id ?? null,
     tableLabel,
     expiresAt: session.expires_at,
     billPaymentStatus: session.bill_payment_status,

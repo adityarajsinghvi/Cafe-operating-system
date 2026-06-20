@@ -217,7 +217,7 @@ export function GuestCartSheet({ currency }: { currency: string }) {
       rotate: [0, -1, 1, -0.5, 0],
       scale: 1,
       opacity: 1,
-      transition: { duration: 0.32, ease: "easeInOut" },
+      transition: { duration: 0.32, ease: [0.45, 0, 0.55, 1] as [number, number, number, number] },
     },
     tearing: {
       x: 0, y: 0, rotate: 0, scale: 1, opacity: 1,
@@ -229,7 +229,7 @@ export function GuestCartSheet({ currency }: { currency: string }) {
       scale: 0.92,
       opacity: 0,
       x: 16,
-      transition: { duration: 0.38, ease: [0.4, 0, 0.6, 1] },
+      transition: { duration: 0.38, ease: [0.4, 0, 0.6, 1] as [number, number, number, number] },
     },
     success: { y: 0, rotate: 0, scale: 1, opacity: 1, x: 0 },
   };

@@ -388,13 +388,12 @@ export async function publishMenuFromDraft(
         is_popular: item.isPopular ?? false,
         is_special: item.isSpecial ?? false,
         sort_order: itemIndex,
-        tags: (item as any).tags ?? [],
       }));
 
     if (items.length) {
       const { error: itemsError } = await ctx.admin
         .from("menu_items")
-        .insert(items);
+        .insert(items as any);
 
       if (itemsError) {
         return { error: itemsError.message };
@@ -454,14 +453,15 @@ export async function getPublishedMenuForEdit(restaurantId: string) {
     .order("sort_order");
 
   return {
-    categories: categories.map((category) => ({
+    categories: categories.map((category) => {
+      const catItems = (items ?? []).filter((item) => item.category_id === category.id);
+      return {
       id: category.id,
       name: category.name,
       sortOrder: category.sort_order,
       isActive: category.is_active,
-      items: (items ?? [])
-        .filter((item) => item.category_id === category.id)
-        .map((item) => ({
+      sectionId: (catItems[0] as any)?.section_id ?? null,
+      items: catItems.map((item) => ({
           id: item.id,
           categoryId: item.category_id,
           name: item.name,
@@ -476,7 +476,8 @@ export async function getPublishedMenuForEdit(restaurantId: string) {
           tags: (item as any).tags ?? [],
           sectionId: (item as any).section_id ?? null,
         })),
-    })),
+      };
+    }),
   };
 }
 
