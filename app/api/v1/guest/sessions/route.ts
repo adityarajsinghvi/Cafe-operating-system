@@ -35,6 +35,8 @@ export async function POST(request: Request) {
   }
 
   const response = NextResponse.json({
+    sessionId: result.sessionId,
+    restaurantId: result.restaurantId,
     tableLabel: result.tableLabel,
     expiresAt: result.expiresAt,
     resumed: result.resumed,

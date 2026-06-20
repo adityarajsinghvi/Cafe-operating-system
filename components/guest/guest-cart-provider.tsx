@@ -11,6 +11,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { createClient } from "@/lib/supabase/client";
+
 import type { CartLine, Order, BillPaymentStatus } from "@/types/order";
 import { GUEST_TRACKABLE_STATUSES } from "@/types/order";
 import type { GuestMenuItem } from "@/types/guest";
@@ -89,6 +91,9 @@ export function GuestCartProvider({
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [billPaymentStatus, setBillPaymentStatus] =
     useState<BillPaymentStatus | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [guestRestaurantId, setGuestRestaurantId] = useState<string | null>(null);
+  const realtimeConnectedRef = useRef(false);
   const previousStatusRef = useRef<Record<string, string>>({});
 
   // Customer identity — persisted in localStorage keyed by restaurantId
@@ -220,6 +225,9 @@ export function GuestCartProvider({
     setTableLabel(null);
     setBillPaymentStatus(null);
     setSessionReady(false);
+    setSessionId(null);
+    setGuestRestaurantId(null);
+    realtimeConnectedRef.current = false;
     previousStatusRef.current = {};
 
     async function bootstrapSession() {
@@ -238,6 +246,8 @@ export function GuestCartProvider({
         const data = await response.json();
         if (!cancelled) {
           setTableLabel(data.tableLabel ?? null);
+          setSessionId(data.sessionId ?? null);
+          setGuestRestaurantId(data.restaurantId ?? null);
           setSessionReady(true);
         }
 
@@ -253,28 +263,84 @@ export function GuestCartProvider({
     };
   }, [slug, tableToken, refreshOrders]);
 
+  // Strategy 1 — Supabase Realtime: subscribe to order changes for this session.
+  // Zero polling calls while the WebSocket is alive.
+  useEffect(() => {
+    if (!sessionId || !guestRestaurantId) return;
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`guest-orders-${sessionId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+          filter: `table_session_id=eq.${sessionId}`,
+        },
+        () => refreshOrders(),
+      )
+      .subscribe((status) => {
+        realtimeConnectedRef.current = status === "SUBSCRIBED";
+      });
+
+    return () => {
+      realtimeConnectedRef.current = false;
+      void supabase.removeChannel(channel);
+    };
+  }, [sessionId, guestRestaurantId, refreshOrders]);
+
+  // Strategy 2–4 — Smart polling fallback (only runs when Realtime is down).
   useEffect(() => {
     if (!sessionReady) return;
 
-    // Only poll when there's something to track.
-    // trackerOpen alone doesn't warrant continuous polling — the data is already loaded.
-    const needsPoll = activeOrderCount > 0 || hasSessionBill;
+    // Strategy 3 — stop entirely when nothing needs tracking
+    const allDone = activeOrders.length > 0 &&
+      activeOrders.every((o) => o.status === "served" || o.status === "cancelled");
+    const needsPoll = (activeOrderCount > 0 || hasSessionBill) && !allDone;
     if (!needsPoll) return;
 
-    // Faster polling while orders are in-flight, slower when just waiting on bill.
-    const intervalMs = activeOrderCount > 0 ? 12000 : 60000;
-    const interval = setInterval(refreshOrders, intervalMs);
+    // Strategy 4 — exponential backoff based on oldest active order age
+    const oldestActive = activeOrders
+      .filter((o) => o.status !== "served" && o.status !== "cancelled")
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0];
 
+    const orderAgeMs = oldestActive
+      ? Date.now() - new Date(oldestActive.createdAt).getTime()
+      : 0;
+
+    const backoffMs =
+      orderAgeMs < 2 * 60_000  ? 12_000  // first 2 min: every 12s
+      : orderAgeMs < 10 * 60_000 ? 30_000 // 2–10 min: every 30s
+      : 60_000;                            // 10+ min: every 60s
+
+    const interval = setInterval(() => {
+      // Strategy 1 — skip poll if Realtime is connected
+      if (realtimeConnectedRef.current) return;
+      // Strategy 2 — skip poll if tab is hidden
+      if (document.visibilityState !== "visible") return;
+      refreshOrders();
+    }, backoffMs);
+
+    // Strategy 2 — refresh immediately when tab becomes visible again
     const onVisible = () => {
-      if (document.visibilityState === "visible") refreshOrders();
+      if (document.visibilityState === "visible" && !realtimeConnectedRef.current) {
+        refreshOrders();
+      }
     };
     document.addEventListener("visibilitychange", onVisible);
+
+    // Strategy 5 — clean up on page unload
+    const onUnload = () => clearInterval(interval);
+    window.addEventListener("beforeunload", onUnload);
 
     return () => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("beforeunload", onUnload);
     };
-  }, [sessionReady, activeOrderCount, hasSessionBill, refreshOrders]);
+  }, [sessionReady, activeOrders, activeOrderCount, hasSessionBill, refreshOrders]);
 
   const addItem = useCallback((item: GuestMenuItem) => {
     setLines((current) => {

@@ -235,6 +235,7 @@ export async function createGuestSession({
 }): Promise<
   | { error: string }
   | {
+      sessionId: string;
       sessionToken: string;
       expiresAt: string;
       tableLabel: string | null;
@@ -279,7 +280,7 @@ export async function createGuestSession({
       table_id: tableId,
       expires_at: expiresAt,
     })
-    .select("session_token, expires_at")
+    .select("id, session_token, expires_at")
     .single();
 
   if (error || !session) {
@@ -287,6 +288,7 @@ export async function createGuestSession({
   }
 
   return {
+    sessionId: session.id,
     sessionToken: session.session_token,
     expiresAt: session.expires_at,
     tableLabel,
@@ -305,10 +307,12 @@ export async function resolveGuestSession({
 }): Promise<
   | { error: string }
   | {
+      sessionId: string;
       sessionToken: string;
       expiresAt: string;
       tableLabel: string | null;
       tableId: string | null;
+      restaurantId: string;
       resumed: boolean;
     }
 > {
@@ -330,10 +334,12 @@ export async function resolveGuestSession({
       const existingTableId = existing.tableId ?? null;
       if (existingTableId === targetTableId) {
         return {
+          sessionId: existing.id,
           sessionToken: existingSessionToken,
           expiresAt: existing.expiresAt,
           tableLabel: existing.tableLabel,
           tableId: existing.tableId,
+          restaurantId,
           resumed: true,
         };
       }
@@ -346,8 +352,12 @@ export async function resolveGuestSession({
   }
 
   return {
-    ...created,
+    sessionId: created.sessionId,
+    sessionToken: created.sessionToken,
+    expiresAt: created.expiresAt,
+    tableLabel: created.tableLabel,
     tableId: targetTableId,
+    restaurantId,
     resumed: false,
   };
 }
