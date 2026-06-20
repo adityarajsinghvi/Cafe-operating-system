@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "PowerShell(Get-Command supabase -ErrorAction SilentlyContinue)",
+      "PowerShell(if \\(-not $?\\) { \"supabase CLI not found\" })",
+      "PowerShell(Set-Location \"c:\\\\Projects\\\\parcha_foundation\\\\parcha\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch 'DeprecationWarning|node:28|node:16|NodeJS' } | Select-Object -First 20)",
+      "PowerShell(Set-Location \"c:\\\\Projects\\\\parcha_foundation\\\\parcha\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch 'DeprecationWarning|NodeJS|node:' } | Where-Object { $_ -match 'error TS' } | Select-Object -First 20)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "PowerShell(Get-Process -Id 41488)",
+      "PowerShell(Get-Command npx -ErrorAction SilentlyContinue)",
+      "PowerShell(npx --yes playwright --version 2>&1)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "PowerShell(cd \"C:\\\\Projects\\\\parcha_foundation\\\\parcha\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"error TS\" } | Select-Object -First 30)",
+      "PowerShell(Stop-Process -Id 28928 -Force -ErrorAction SilentlyContinue)",
+      "Bash(dir \"C:\\\\Projects\\\\parcha_foundation\\\\parcha\\\\app\" /s /b)",
+      "Bash(findstr dashboard *)",
+      "Bash(taskkill /PID 24772 /F)",
+      "PowerShell(Stop-Process -Id 24772 -Force)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "PowerShell(cd C:\\\\Projects\\\\parcha_foundation\\\\parcha; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"\\(guest-menu-view|guest-identity|guest-cart|order-card\\\\.tsx|dashboard-nav|dashboard-shell|order-board\\)\" } | Select-Object -First 20)",
+      "Bash(python3 \"C:\\\\Users\\\\Aditya\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\8b266729-da43-430f-afec-2b83ae01399e\\\\b6748b5a-7635-4326-ba0c-f1676600109c\\\\rpm\\\\plugin_018FAboUatY3nbbcQAhRg4g7\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"cafe SaaS landing page premium editorial warm terracotta\" --design-system -p \"Parcha\" -f markdown)",
+      "Bash(python3 \"C:\\\\Users\\\\Aditya\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\8b266729-da43-430f-afec-2b83ae01399e\\\\b6748b5a-7635-4326-ba0c-f1676600109c\\\\rpm\\\\plugin_018FAboUatY3nbbcQAhRg4g7\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"cafe SaaS premium editorial warm\" --design-system -p \"Parcha\")",
+      "WebSearch",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

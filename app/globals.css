@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── OWNER DASHBOARD — warm paper, terracotta, espresso ──────────────────── */
+:root {
+  --card: #faf9f5;
+  --ring: #c96442;
+  --input: #b4b2a7;
+  --muted: #ede9de;
+  --accent: #e9e6dc;
+  --border: #dad9d4;
+  --radius: 0.75rem;
+  --chart-1: #b05730;
+  --chart-2: #9c87f5;
+  --chart-3: #ded8c4;
+  --chart-4: #dbd3f0;
+  --chart-5: #b4552d;
+  --popover: #ffffff;
+  --primary: #c96442;
+  --sidebar: #f5f4ee;
+  --secondary: #e9e6dc;
+  --background: #faf9f5;
+  --foreground: #3d3929;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --sidebar-ring: #b5b5b5;
+  --sidebar-accent: #e9e6dc;
+  --sidebar-border: #e8e6df;
+  --card-foreground: #3d3929;
+  --sidebar-primary: #c96442;
+  --muted-foreground: #83827d;
+  --accent-foreground: #28261b;
+  --popover-foreground: #28261b;
+  --primary-foreground: #ffffff;
+  --sidebar-foreground: #3d3d3a;
+  --secondary-foreground: #535146;
+  --sidebar-accent-foreground: #343434;
+  --sidebar-primary-foreground: #fbfbfb;
+}
+
+.dark {
+  --card: #262624;
+  --ring: #d97757;
+  --input: #52514a;
+  --muted: #1b1b19;
+  --accent: #1a1915;
+  --border: #3e3e38;
+  --chart-1: #b05730;
+  --chart-2: #9c87f5;
+  --chart-3: #1a1915;
+  --chart-4: #2f2b48;
+  --chart-5: #b4552d;
+  --popover: #30302e;
+  --primary: #d97757;
+  --sidebar: #1f1e1d;
+  --secondary: #faf9f5;
+  --background: #262624;
+  --foreground: #c3c0b6;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --sidebar-ring: #b5b5b5;
+  --sidebar-accent: #0f0f0e;
+  --sidebar-border: #3e3e38;
+  --card-foreground: #faf9f5;
+  --sidebar-primary: #343434;
+  --muted-foreground: #b7b5a9;
+  --accent-foreground: #f5f4ee;
+  --popover-foreground: #e5e5e2;
+  --primary-foreground: #ffffff;
+  --sidebar-foreground: #c3c0b6;
+  --secondary-foreground: #30302e;
+  --sidebar-accent-foreground: #c3c0b6;
+  --sidebar-primary-foreground: #fbfbfb;
+}
+
+@theme inline {
+  --color-card: var(--card);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-card-foreground: var(--card-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* ── GUEST APP — "Torn Chit" palette ────────────────────────────────────── */
+  .guest-app,
+  body.guest-route {
+    color-scheme: light;
+
+    --background: #faf9f5;
+    --foreground: #3d3929;
+    --card: #ffffff;
+    --card-foreground: #3d3929;
+    --popover: #ffffff;
+    --popover-foreground: #3d3929;
+    --primary: #c96442;
+    --primary-foreground: #ffffff;
+    --secondary: #ede9de;
+    --secondary-foreground: #535146;
+    --muted: #ede9de;
+    --muted-foreground: #83827d;
+    --accent: #e9e6dc;
+    --accent-foreground: #28261b;
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+    --border: #dad9d4;
+    --input: #e9e6dc;
+    --ring: #c96442;
+    --radius: 0.75rem;
+
+    /* guest-specific design tokens */
+    --guest-bg: #faf9f5;
+    --guest-surface: #ffffff;
+    --guest-surface-raised: #ffffff;
+    --guest-ink: #3d3929;
+    --guest-ink-muted: #83827d;
+    --guest-border: #dad9d4;
+
+    /* terracotta primary for CTAs */
+    --guest-accent: #c96442;
+    --guest-accent-soft: #f5ede8;
+    --guest-accent-foreground: #ffffff;
+
+    /* gold = same terracotta family for specials */
+    --guest-gold: #b05730;
+    --guest-gold-soft: #f0e6df;
+
+    /* tab states — espresso for active */
+    --guest-tab-active: #3d3929;
+    --guest-tab-inactive: #83827d;
+
+    /* torn chit header */
+    --guest-header-bg: #3d3929;
+    --guest-header-ink: #faf9f5;
+  }
+
+  .guest-app {
+    background: #faf9f5;
+    min-height: 100dvh;
+  }
+
+  /* Portaled dialogs/sheets on guest routes inherit the warm palette */
+  html.dark body.guest-route {
+    color-scheme: light;
+    --background: #faf9f5;
+    --foreground: #3d3929;
+    --card: #ffffff;
+    --card-foreground: #3d3929;
+    --popover: #ffffff;
+    --popover-foreground: #3d3929;
+    --muted: #ede9de;
+    --muted-foreground: #83827d;
+    --accent: #e9e6dc;
+    --accent-foreground: #28261b;
+    --border: #dad9d4;
+    --input: #e9e6dc;
+    --ring: #c96442;
+    --primary: #c96442;
+    --primary-foreground: #ffffff;
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+    --guest-bg: #faf9f5;
+    --guest-surface: #ffffff;
+    --guest-ink: #3d3929;
+    --guest-ink-muted: #83827d;
+    --guest-border: #dad9d4;
+    --guest-accent: #c96442;
+    --guest-accent-foreground: #ffffff;
+    --guest-gold: #b05730;
+    --guest-tab-active: #3d3929;
+    --guest-tab-inactive: #83827d;
+    --guest-header-bg: #3d3929;
+    --guest-header-ink: #faf9f5;
+  }
+}
+
+/* ── Ruled paper lines utility ───────────────────────────────────────────── */
+.parcha-ruled {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 23px,
+    rgba(218, 217, 212, 0.55) 23px,
+    rgba(218, 217, 212, 0.55) 24px
+  );
+}
+
+/* ── Chit stamp — rotating ink-circle status badge ──────────────────────── */
+.chit-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 50%;
+  border-width: 1.5px;
+  border-style: solid;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  line-height: 1.25;
+  transform: rotate(-12deg);
+  flex-shrink: 0;
+}
