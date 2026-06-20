@@ -184,12 +184,13 @@ export function ServiceRequestPanel({
 
   useEffect(() => { setRequests(initialRequests); }, [initialRequests]);
 
-  useRestaurantRealtime(restaurantId, refresh, { scope: "service-requests", tables: ["service_requests"] });
+  const { connected: realtimeConnected } = useRestaurantRealtime(restaurantId, refresh, { scope: "service-requests", tables: ["service_requests"] });
 
   useEffect(() => {
-    const interval = setInterval(refresh, 30000);
+    if (realtimeConnected) return;
+    const interval = setInterval(refresh, 60000);
     return () => clearInterval(interval);
-  }, [refresh]);
+  }, [refresh, realtimeConnected]);
 
   if (requests.length === 0) return null;
 

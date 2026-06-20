@@ -65,16 +65,20 @@ export function OrderBoard({
     }
   }, [restaurantId]);
 
-  useRestaurantRealtime(restaurantId, refresh, {
+  const { connected: realtimeConnected } = useRestaurantRealtime(restaurantId, refresh, {
     scope: "orders",
     tables: ["orders"],
   });
 
   useEffect(() => {
-    setLiveConnected(true);
-    const interval = setInterval(refresh, 30000);
+    setLiveConnected(realtimeConnected);
+  }, [realtimeConnected]);
+
+  useEffect(() => {
+    if (realtimeConnected) return;
+    const interval = setInterval(refresh, 60000);
     return () => clearInterval(interval);
-  }, [refresh]);
+  }, [refresh, realtimeConnected]);
 
   const activeOrders = orders.filter((order) =>
     ACTIVE_STATUSES.includes(order.status),

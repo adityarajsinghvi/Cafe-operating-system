@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -8,7 +8,8 @@ type RealtimeTable = "orders" | "service_requests" | "table_sessions";
 
 /**
  * Subscribes to Supabase Realtime changes for a restaurant.
- * Each caller must pass a unique `scope` — multiple hooks cannot share one channel name.
+ * Returns `connected` — true once the WebSocket channel is SUBSCRIBED.
+ * Callers use this to skip polling when realtime is active.
  */
 export function useRestaurantRealtime(
   restaurantId: string,
@@ -18,11 +19,12 @@ export function useRestaurantRealtime(
     tables: RealtimeTable[];
     enabled?: boolean;
   },
-) {
+): { connected: boolean } {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
   const enabled = options.enabled ?? true;
   const tablesKey = options.tables.join(",");
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (!enabled || !restaurantId || options.tables.length === 0) return;
@@ -45,10 +47,15 @@ export function useRestaurantRealtime(
       );
     }
 
-    channel.subscribe();
+    channel.subscribe((status) => {
+      setConnected(status === "SUBSCRIBED");
+    });
 
     return () => {
+      setConnected(false);
       void supabase.removeChannel(channel);
     };
   }, [restaurantId, enabled, options.scope, tablesKey]);
+
+  return { connected };
 }

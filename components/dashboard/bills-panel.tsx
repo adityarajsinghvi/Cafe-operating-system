@@ -46,15 +46,16 @@ export function BillsPanel({
     setBills(initialBills.filter((bill) => bill.paymentStatus === "unpaid"));
   }, [initialBills]);
 
-  useRestaurantRealtime(restaurantId, refresh, {
+  const { connected: realtimeConnected } = useRestaurantRealtime(restaurantId, refresh, {
     scope: "bills",
     tables: ["orders", "table_sessions"],
   });
 
   useEffect(() => {
-    const interval = setInterval(refresh, 30000);
+    if (realtimeConnected) return;
+    const interval = setInterval(refresh, 60000);
     return () => clearInterval(interval);
-  }, [refresh]);
+  }, [refresh, realtimeConnected]);
 
   if (unpaidBills.length === 0) {
     return null;

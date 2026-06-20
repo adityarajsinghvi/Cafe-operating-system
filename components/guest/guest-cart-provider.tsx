@@ -262,7 +262,7 @@ export function GuestCartProvider({
     if (!needsPoll) return;
 
     // Faster polling while orders are in-flight, slower when just waiting on bill.
-    const intervalMs = activeOrderCount > 0 ? 6000 : 20000;
+    const intervalMs = activeOrderCount > 0 ? 12000 : 60000;
     const interval = setInterval(refreshOrders, intervalMs);
 
     const onVisible = () => {
