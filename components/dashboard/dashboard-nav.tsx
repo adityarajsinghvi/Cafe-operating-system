@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { signOutAction } from "@/lib/actions/auth";
+import { ParchaWordmark } from "@/components/shared/parcha-logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { SheetClose } from "@/components/ui/sheet";
@@ -76,14 +76,7 @@ export function DashboardNav({
     <div className="flex h-full flex-col">
       {/* Parcha logo */}
       <div className="mb-6">
-        <Image
-          src="/parcha-logo.png"
-          alt="Parcha"
-          width={160}
-          height={80}
-          className="mb-2 object-contain"
-          priority
-        />
+        <ParchaWordmark variant="dark" height={24} className="mb-2" />
         <h2
           className="truncate text-sm font-semibold tracking-tight text-muted-foreground"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}

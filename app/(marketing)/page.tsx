@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { ParchaWordmark } from "@/components/shared/parcha-logo";
 import {
   motion,
   useInView,
@@ -597,14 +597,7 @@ export default function HomePage() {
           borderBottom: "1px solid rgba(250,249,245,0.08)",
         }}
       >
-        <Image
-          src="/parcha-logo.png"
-          alt="Parcha"
-          width={100}
-          height={50}
-          className="object-contain"
-          priority
-        />
+        <ParchaWordmark variant="light" height={26} />
         <div className="flex items-center gap-3">
           <Link
             href="/login"

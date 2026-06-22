@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { MapPin, UtensilsCrossed } from "lucide-react";
+import { UtensilsCrossed } from "lucide-react";
 
+import { ParchaWordmark } from "@/components/shared/parcha-logo";
 import type { GuestMenu } from "@/types/guest";
 
 export function RestaurantHero({
@@ -86,14 +86,8 @@ export function RestaurantHero({
         </motion.div>
 
         {/* Parcha branding — top-right corner */}
-        <div className="absolute right-4 top-4 sm:right-5">
-          <Image
-            src="/parcha-icon.png"
-            alt="Parcha"
-            width={28}
-            height={28}
-            className="rounded-lg opacity-80"
-          />
+        <div className="absolute right-4 top-4 sm:right-5 opacity-60">
+          <ParchaWordmark variant="light" height={16} />
         </div>
 
         {/* Metadata chips */}

@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
 import { DashboardNav } from "@/components/dashboard/dashboard-nav";
+import { ParchaIcon } from "@/components/shared/parcha-logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -53,14 +53,7 @@ export function DashboardShell({
           </Sheet>
 
           <div className="flex min-w-0 items-center gap-2">
-            <Image
-              src="/parcha-icon.png"
-              alt="Parcha"
-              width={32}
-              height={32}
-              className="shrink-0 rounded-lg"
-              priority
-            />
+            <ParchaIcon variant="dark" size={28} className="shrink-0" />
             <p className="truncate text-sm font-semibold tracking-tight">
               {restaurantName}
             </p>
