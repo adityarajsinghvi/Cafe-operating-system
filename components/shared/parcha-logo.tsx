@@ -22,14 +22,14 @@ export function ParchaWordmark({
       ? "#c96442"
       : "#3d3929";
 
-  const aspectRatio = 4.2;
+  const aspectRatio = 3.8;
   const width = height * aspectRatio;
 
   return (
     <svg
       width={width}
       height={height}
-      viewBox="0 0 126 36"
+      viewBox="0 0 114 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
@@ -38,7 +38,7 @@ export function ParchaWordmark({
       {/* Wordmark */}
       <text
         x="2"
-        y="26"
+        y="24"
         fontFamily="Georgia, 'Times New Roman', serif"
         fontSize="24"
         fontWeight="700"
@@ -47,22 +47,22 @@ export function ParchaWordmark({
       >
         Parcha
       </text>
-      {/* Terracotta spark — top-right, well within viewBox */}
-      <g transform="translate(108, 8)">
+      {/* Terracotta spark — sits just after the 'a', superscript style */}
+      <g transform="translate(96, 5)">
         {[0, 30, 60, 90, 120, 150].map((deg) => (
           <line
             key={deg}
             x1="0"
-            y1="-5"
+            y1="-4"
             x2="0"
-            y2="5"
+            y2="4"
             stroke="#c96442"
-            strokeWidth="1.8"
+            strokeWidth="1.6"
             strokeLinecap="round"
             transform={`rotate(${deg})`}
           />
         ))}
-        <circle cx="0" cy="0" r="1.4" fill="#c96442" />
+        <circle cx="0" cy="0" r="1.2" fill="#c96442" />
       </g>
     </svg>
   );

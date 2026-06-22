@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ScrollText } from "lucide-react";
 
-const SERIF = `var(--font-calistoga), Georgia, serif`;
+import { ParchaWordmark } from "@/components/shared/parcha-logo";
+
 const C = {
   espresso: "#3d3929",
   terracotta: "#c96442",
@@ -77,18 +77,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mb-8 flex flex-col items-center gap-1"
+        className="relative mb-8 flex flex-col items-center gap-1.5"
       >
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl shadow-lg" style={{ background: C.terracotta }}>
-            <ScrollText className="h-5 w-5 text-white" />
-          </div>
-          <span className="text-2xl font-black tracking-tight" style={{ color: C.paper, fontFamily: SERIF }}>
-            Parcha
-          </span>
+        <Link href="/" className="group">
+          <ParchaWordmark variant="light" height={32} />
         </Link>
-        <p className="text-[11px] font-semibold" style={{ color: C.inkMuted }}>
-          AI OS for Indian cafes
+        <p className="text-[11px] italic" style={{ color: C.inkMuted, fontFamily: "Georgia, serif" }}>
+          The memory your cafe was missing
         </p>
       </motion.div>
 
