@@ -645,20 +645,20 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
           </div>
         </div>
         {hasSections && <SectionNav sections={menu.sections} activeId={activeSectionId} onChange={setActiveSectionId} />}
-        <div className="flex gap-2.5 overflow-x-auto px-4 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-6">
+        <div className="flex gap-2 overflow-x-auto px-4 pb-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-6">
           {DIET_FILTERS.map((f) => {
             const isActive = dietFilter === f.id;
             return (
               <motion.button key={f.id} type="button" whileTap={{ scale: 0.94 }} transition={springSnappy}
                 onClick={() => setDietFilter(f.id)}
-                className={`shrink-0 flex items-center gap-1.5 rounded-2xl border-2 px-4 py-2.5 text-sm font-bold transition-all ${
+                className={`shrink-0 flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
                   isActive
-                    ? "border-transparent text-white shadow-md"
-                    : "border-[var(--guest-border)] bg-[var(--guest-surface)] text-[var(--guest-ink)] hover:border-[var(--guest-accent)]/40"
+                    ? "border-transparent text-white shadow-sm"
+                    : "border-[var(--guest-border)] bg-[var(--guest-surface)] text-[var(--guest-ink-muted)] hover:text-[var(--guest-ink)]"
                 }`}
                 style={isActive ? { background: "var(--guest-accent)" } : undefined}
               >
-                {f.icon && <f.icon className="h-4 w-4" />}
+                {f.icon && <f.icon className="h-3 w-3" />}
                 {f.label}
               </motion.button>
             );
