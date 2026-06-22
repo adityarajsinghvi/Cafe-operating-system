@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
@@ -51,11 +52,18 @@ export function DashboardShell({
             </SheetContent>
           </Sheet>
 
-          <div className="min-w-0">
+          <div className="flex min-w-0 items-center gap-2">
+            <Image
+              src="/parcha-icon.png"
+              alt="Parcha"
+              width={32}
+              height={32}
+              className="shrink-0 rounded-lg"
+              priority
+            />
             <p className="truncate text-sm font-semibold tracking-tight">
               {restaurantName}
             </p>
-            <p className="text-xs text-muted-foreground">Dashboard</p>
           </div>
         </div>
 

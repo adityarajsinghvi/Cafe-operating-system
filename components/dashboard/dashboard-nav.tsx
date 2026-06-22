@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import type { ReactNode } from "react";
@@ -73,15 +74,18 @@ export function DashboardNav({
 
   return (
     <div className="flex h-full flex-col">
-      {/* Parcha wordmark */}
+      {/* Parcha logo */}
       <div className="mb-6">
-        <p
-          className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground mb-1"
-        >
-          Parcha
-        </p>
+        <Image
+          src="/parcha-logo.png"
+          alt="Parcha"
+          width={160}
+          height={80}
+          className="mb-2 object-contain"
+          priority
+        />
         <h2
-          className="truncate text-lg font-bold tracking-tight"
+          className="truncate text-sm font-semibold tracking-tight text-muted-foreground"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           {restaurantName}

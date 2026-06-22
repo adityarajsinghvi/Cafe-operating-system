@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   },
   description:
     "The AI-powered operating system for modern cafes. Smart menus, customer memory, loyalty, and campaigns — all in one place.",
+  icons: {
+    icon: "/parcha-icon.png",
+    apple: "/parcha-icon.png",
+  },
 };
 
 export const viewport: Viewport = {

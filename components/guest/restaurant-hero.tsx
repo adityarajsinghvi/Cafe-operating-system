@@ -85,6 +85,17 @@ export function RestaurantHero({
           </div>
         </motion.div>
 
+        {/* Parcha branding — top-right corner */}
+        <div className="absolute right-4 top-4 sm:right-5">
+          <Image
+            src="/parcha-icon.png"
+            alt="Parcha"
+            width={28}
+            height={28}
+            className="rounded-lg opacity-80"
+          />
+        </div>
+
         {/* Metadata chips */}
         <motion.div
           initial={{ opacity: 0, y: 6 }}
