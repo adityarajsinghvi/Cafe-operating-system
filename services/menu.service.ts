@@ -518,6 +518,45 @@ export async function updatePublishedMenuItem(
   return { success: true as const };
 }
 
+export async function uploadRestaurantLogo(restaurantId: string, file: File) {
+  const ctx = await requireRestaurantAccess(restaurantId);
+  if (!ctx) return { error: "Unauthorized" as const };
+
+  if (!file.type.startsWith("image/")) {
+    return { error: "Please upload an image file" };
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    return { error: "Image must be under 5 MB" };
+  }
+
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `restaurants/${restaurantId}/logo.${ext}`;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error: uploadError } = await ctx.admin.storage
+    .from("menu-images")
+    .upload(path, buffer, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (uploadError) return { error: uploadError.message };
+
+  const { data: publicUrl } = ctx.admin.storage
+    .from("menu-images")
+    .getPublicUrl(path);
+
+  const { error } = await ctx.admin
+    .from("restaurants")
+    .update({ logo_url: publicUrl.publicUrl })
+    .eq("id", restaurantId);
+
+  if (error) return { error: error.message };
+  return { logoUrl: publicUrl.publicUrl };
+}
+
 export async function updateRestaurantSettings(
   restaurantId: string,
   updates: {

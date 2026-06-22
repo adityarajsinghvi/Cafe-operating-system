@@ -249,6 +249,15 @@
   );
 }
 
+.dark .parcha-ruled {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 23px,
+    rgba(255, 255, 255, 0.06) 23px,
+    rgba(255, 255, 255, 0.06) 24px
+  );
+}
+
 /* ── Chit stamp — rotating ink-circle status badge ──────────────────────── */
 .chit-stamp {
   display: inline-flex;

@@ -34,7 +34,8 @@ export default async function SettingsPage({
         restaurantName={restaurant.name}
         name={restaurant.name}
         description={restaurant.description}
-        primaryColor={restaurant.primary_color}
+        primaryColor={restaurant.primary_color ?? "#c96442"}
+        logoUrl={restaurant.logo_url}
         city={(restaurant as any).city ?? ""}
         smartSuggestionsEnabled={(restaurant as any).smart_suggestions_enabled ?? true}
         rewardsEnabled={(restaurant as any).rewards_enabled ?? false}

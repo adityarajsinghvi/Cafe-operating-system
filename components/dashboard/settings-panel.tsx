@@ -2,6 +2,7 @@
 
 import {
   Copy,
+  ImagePlus,
   Loader2,
   Pencil,
   Plus,
@@ -9,6 +10,7 @@ import {
   QrCode,
   Trash2,
 } from "lucide-react";
+import Image from "next/image";
 import { useMemo, useState, useTransition } from "react";
 
 import {
@@ -17,6 +19,7 @@ import {
   deleteTableAction,
   updateSettingsAction,
   updateTableAction,
+  uploadRestaurantLogoAction,
 } from "@/lib/actions/menu-editor";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,6 +46,7 @@ export function SettingsPanel({
   name,
   description,
   primaryColor,
+  logoUrl,
   city,
   smartSuggestionsEnabled,
   rewardsEnabled,
@@ -55,6 +59,7 @@ export function SettingsPanel({
   name: string;
   description: string | null;
   primaryColor: string;
+  logoUrl: string | null;
   city: string;
   smartSuggestionsEnabled: boolean;
   rewardsEnabled: boolean;
@@ -64,11 +69,13 @@ export function SettingsPanel({
   const [settingsMessage, setSettingsMessage] = useState<string | null>(null);
   const [tableMessage, setTableMessage] = useState<string | null>(null);
   const [isSavingSettings, startSaveSettings] = useTransition();
+  const [isUploadingLogo, startUploadLogo] = useTransition();
   const [isCreatingTable, startCreateTable] = useTransition();
   const [isBulkCreating, startBulkCreate] = useTransition();
   const [isPrinting, setIsPrinting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [logo, setLogo] = useState(logoUrl);
 
   const groupedTables = useMemo(() => {
     const groups = new Map<string, RestaurantTable[]>();
@@ -87,6 +94,19 @@ export function SettingsPanel({
     setSettingsMessage(null);
     startSaveSettings(async () => {
       const result = await updateSettingsAction(restaurantId, formData);
+      setSettingsMessage(result.error ?? result.success ?? null);
+    });
+  }
+
+  function handleLogoUpload(file: File) {
+    setSettingsMessage(null);
+
+    const formData = new FormData();
+    formData.append("logo", file);
+
+    startUploadLogo(async () => {
+      const result = await uploadRestaurantLogoAction(restaurantId, formData);
+      if (result.logoUrl) setLogo(result.logoUrl);
       setSettingsMessage(result.error ?? result.success ?? null);
     });
   }
@@ -182,6 +202,44 @@ export function SettingsPanel({
             className="space-y-4"
           >
             <div className="space-y-2">
+              <Label>Logo</Label>
+              <div className="flex items-center gap-4">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-border bg-muted">
+                  {logo ? (
+                    <Image
+                      src={logo}
+                      alt={restaurantName}
+                      fill
+                      className="object-cover"
+                      sizes="64px"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-muted-foreground">
+                      {restaurantName.charAt(0)}
+                    </div>
+                  )}
+                </div>
+                <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/40">
+                  <ImagePlus className="h-4 w-4" />
+                  {isUploadingLogo ? "Uploading…" : "Upload logo"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={isUploadingLogo}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleLogoUpload(file);
+                    }}
+                  />
+                </label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Shown on your guest menu next to your restaurant name.
+              </p>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input id="name" name="name" defaultValue={name} required />
             </div>
@@ -196,7 +254,7 @@ export function SettingsPanel({
             </div>
             <div className="space-y-2">
               <Label htmlFor="primaryColor">Brand color</Label>
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <Input
                   id="primaryColor"
                   name="primaryColor"
@@ -204,12 +262,14 @@ export function SettingsPanel({
                   defaultValue={primaryColor}
                   className="h-11 w-16 cursor-pointer p-1"
                 />
-                <Input
-                  defaultValue={primaryColor}
-                  readOnly
-                  className="font-mono text-sm"
-                />
+                <span className="font-mono text-sm text-muted-foreground">
+                  {primaryColor}
+                </span>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Tints accents like the order progress bar on the guest menu. Very dark
+                shades are ignored in favor of the default accent for readability.
+              </p>
             </div>
 
             <div className="space-y-2">

@@ -12,6 +12,7 @@ import {
   updatePublishedMenuItem,
   updateRestaurantSettings,
   uploadMenuItemImage,
+  uploadRestaurantLogo,
 } from "@/services/menu.service";
 import {
   createRestaurantTable,
@@ -219,6 +220,25 @@ export async function updateSettingsAction(
 
   revalidatePath(`/dashboard/${restaurantId}/settings`);
   return { success: "Settings saved" };
+}
+
+export async function uploadRestaurantLogoAction(
+  restaurantId: string,
+  formData: FormData,
+): Promise<EditorActionState & { logoUrl?: string }> {
+  const file = formData.get("logo");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Please choose an image" };
+  }
+
+  const result = await uploadRestaurantLogo(restaurantId, file);
+  if ("error" in result && result.error) {
+    return { error: result.error };
+  }
+
+  revalidatePath(`/dashboard/${restaurantId}/settings`);
+  revalidatePath(`/r`);
+  return { success: "Logo uploaded", logoUrl: result.logoUrl };
 }
 
 export async function createTableAction(
