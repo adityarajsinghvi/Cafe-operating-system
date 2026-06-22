@@ -39,6 +39,12 @@ export function SmartSuggestionBanner({ onSuggestItem }: Props) {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (loading || !suggestion) return;
+    const timer = setTimeout(() => setDismissed(true), 2 * 60 * 1000);
+    return () => clearTimeout(timer);
+  }, [loading, suggestion]);
+
   if (loading || !suggestion || dismissed) return null;
 
   return (

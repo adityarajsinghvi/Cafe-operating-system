@@ -7,8 +7,10 @@ import {
   ChevronUp,
   Clock,
   Droplets,
+  Drumstick,
   Flame,
   Gift,
+  Leaf,
   Loader2,
   Receipt,
   Search,
@@ -525,11 +527,18 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
 
 type DietFilter = "all" | "veg" | "non_veg" | "popular";
 
-const FILTER_LABELS: Record<DietFilter, string> = {
-  all:     "All",
-  veg:     "🌿 Veg",
-  non_veg: "🍗 Non-Veg",
-  popular: "🔥 Popular",
+const DIET_FILTERS: { id: DietFilter; label: string; icon: typeof Leaf | null }[] = [
+  { id: "all",     label: "All",      icon: null },
+  { id: "veg",     label: "Veg",      icon: Leaf },
+  { id: "non_veg", label: "Non-Veg",  icon: Drumstick },
+  { id: "popular", label: "Popular",  icon: Flame },
+];
+
+const DIET_FILTER_LABEL: Record<DietFilter, string> = {
+  all: "All",
+  veg: "Veg",
+  non_veg: "Non-Veg",
+  popular: "Popular",
 };
 
 function SectionNav({
@@ -548,21 +557,23 @@ function SectionNav({
 
   return (
     <div ref={scrollRef}
-      className="flex gap-2 overflow-x-auto px-4 pb-3 pt-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-6">
+      className="flex gap-2.5 overflow-x-auto px-4 pb-3.5 pt-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-6">
       {[{ id: null, name: "All", emoji: null }, ...sections].map((s) => {
         const isActive = activeId === s.id;
         return (
-          <button key={s.id ?? "all"} type="button" data-active={isActive} onClick={() => onChange(s.id)}
-            className={`shrink-0 flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
+          <motion.button key={s.id ?? "all"} type="button" data-active={isActive}
+            whileTap={{ scale: 0.94 }} transition={springSnappy}
+            onClick={() => onChange(s.id)}
+            className={`shrink-0 flex items-center gap-1.5 rounded-2xl border-2 px-4 py-2.5 text-sm font-bold transition-all ${
               isActive
-                ? "text-white shadow-sm"
-                : "border border-[var(--guest-border)] bg-[var(--guest-surface)] text-[var(--guest-ink-muted)] hover:text-[var(--guest-ink)]"
+                ? "border-transparent text-white shadow-md"
+                : "border-[var(--guest-border)] bg-[var(--guest-surface)] text-[var(--guest-ink)] hover:border-[var(--guest-accent)]/40"
             }`}
             style={isActive ? { background: "var(--guest-header-bg)" } : undefined}
           >
             {s.emoji && <span>{s.emoji}</span>}
             {s.name}
-          </button>
+          </motion.button>
         );
       })}
     </div>
@@ -634,19 +645,24 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
           </div>
         </div>
         {hasSections && <SectionNav sections={menu.sections} activeId={activeSectionId} onChange={setActiveSectionId} />}
-        <div className="flex gap-2 overflow-x-auto px-4 pb-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-6">
-          {(Object.keys(FILTER_LABELS) as DietFilter[]).map((f) => (
-            <button key={f} type="button" onClick={() => setDietFilter(f)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                dietFilter === f
-                  ? "text-white shadow-sm"
-                  : "border border-[var(--guest-border)] bg-[var(--guest-surface)] text-[var(--guest-ink-muted)] hover:text-[var(--guest-ink)]"
-              }`}
-              style={dietFilter === f ? { background: "var(--guest-accent)" } : undefined}
-            >
-              {FILTER_LABELS[f]}
-            </button>
-          ))}
+        <div className="flex gap-2.5 overflow-x-auto px-4 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-6">
+          {DIET_FILTERS.map((f) => {
+            const isActive = dietFilter === f.id;
+            return (
+              <motion.button key={f.id} type="button" whileTap={{ scale: 0.94 }} transition={springSnappy}
+                onClick={() => setDietFilter(f.id)}
+                className={`shrink-0 flex items-center gap-1.5 rounded-2xl border-2 px-4 py-2.5 text-sm font-bold transition-all ${
+                  isActive
+                    ? "border-transparent text-white shadow-md"
+                    : "border-[var(--guest-border)] bg-[var(--guest-surface)] text-[var(--guest-ink)] hover:border-[var(--guest-accent)]/40"
+                }`}
+                style={isActive ? { background: "var(--guest-accent)" } : undefined}
+              >
+                {f.icon && <f.icon className="h-4 w-4" />}
+                {f.label}
+              </motion.button>
+            );
+          })}
         </div>
         <div className="mx-4 border-t border-dashed border-[var(--guest-border)] sm:mx-6" />
       </div>
@@ -656,7 +672,7 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
           <div className="rounded-xl border border-dashed border-[var(--guest-border)] px-6 py-14 text-center">
             <p className="text-3xl mb-2">🍽️</p>
             <p className="text-sm font-semibold text-[var(--guest-ink)]">
-              {query ? `No items match "${query}"` : `No ${FILTER_LABELS[dietFilter]} items`}
+              {query ? `No items match "${query}"` : `No ${DIET_FILTER_LABEL[dietFilter]} items`}
             </p>
             {(dietFilter !== "all" || activeSectionId !== null) && (
               <button type="button" onClick={() => { setDietFilter("all"); setActiveSectionId(null); }}
