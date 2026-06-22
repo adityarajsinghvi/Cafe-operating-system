@@ -23,6 +23,7 @@ interface GuestCartContextValue {
   subtotalCents: number;
   tableLabel: string | null;
   sessionReady: boolean;
+  orderingEnabled: boolean;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   activeOrders: Order[];
@@ -74,11 +75,13 @@ export function GuestCartProvider({
   restaurantId,
   slug,
   tableToken,
+  orderingEnabled = true,
   children,
 }: {
   restaurantId: string;
   slug: string;
   tableToken?: string;
+  orderingEnabled?: boolean;
   children: ReactNode;
 }) {
   const cartKey = cartStorageKey(restaurantId, tableToken);
@@ -343,6 +346,7 @@ export function GuestCartProvider({
   }, [sessionReady, activeOrders, activeOrderCount, hasSessionBill, refreshOrders]);
 
   const addItem = useCallback((item: GuestMenuItem) => {
+    if (!orderingEnabled) return;
     setLines((current) => {
       const existing = current.find((line) => line.menuItemId === item.id);
       if (existing) {
@@ -364,7 +368,7 @@ export function GuestCartProvider({
         },
       ];
     });
-  }, []);
+  }, [orderingEnabled]);
 
   const removeItem = useCallback((menuItemId: string) => {
     setLines((current) =>
@@ -417,6 +421,7 @@ export function GuestCartProvider({
 
   const placeOrder = useCallback(
     async (notes?: string, identity?: { phone: string; name: string }) => {
+      if (!orderingEnabled) return { error: "Ordering is currently unavailable" };
       if (!lines.length) return { error: "Add at least one dish to order" };
 
       // If identity was just collected, save it locally before the request
@@ -460,7 +465,7 @@ export function GuestCartProvider({
 
       return { orderId: order?.id };
     },
-    [lines, clearCart, refreshOrders, customerPhone, customerName, restaurantId],
+    [lines, clearCart, refreshOrders, customerPhone, customerName, restaurantId, orderingEnabled],
   );
 
   const requestService = useCallback(async (type: "waiter" | "water" | "bill") => {
@@ -485,6 +490,7 @@ export function GuestCartProvider({
       subtotalCents,
       tableLabel,
       sessionReady,
+      orderingEnabled,
       cartOpen,
       setCartOpen,
       activeOrders,
@@ -517,6 +523,7 @@ export function GuestCartProvider({
       subtotalCents,
       tableLabel,
       sessionReady,
+      orderingEnabled,
       cartOpen,
       activeOrders,
       focusOrder,

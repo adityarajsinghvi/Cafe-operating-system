@@ -10,9 +10,9 @@ import { SheetClose } from "@/components/ui/sheet";
 export const dashboardNavItems = [
   { label: "Dashboard", href: "" },
   { label: "Menu", href: "/menu" },
-  { label: "Orders", href: "/orders" },
+  { label: "Orders", href: "/orders", flag: "ordering" as const },
   { label: "History", href: "/history" },
-  { label: "Rewards", href: "/rewards" },
+  { label: "Rewards", href: "/rewards", flag: "rewards" as const },
   { label: "Customers", href: "/customers" },
   { label: "Settings", href: "/settings" },
 ] as const;
@@ -53,13 +53,22 @@ export function DashboardNav({
   restaurantName,
   mode = "desktop",
   onNavigate,
+  orderingEnabled = true,
+  rewardsEnabled = true,
 }: {
   restaurantId: string;
   restaurantName: string;
   mode?: "desktop" | "mobile";
   onNavigate?: () => void;
+  orderingEnabled?: boolean;
+  rewardsEnabled?: boolean;
 }) {
   const basePath = `/dashboard/${restaurantId}`;
+  const visibleNavItems = dashboardNavItems.filter((item) => {
+    if ("flag" in item && item.flag === "ordering") return orderingEnabled;
+    if ("flag" in item && item.flag === "rewards") return rewardsEnabled;
+    return true;
+  });
 
   return (
     <div className="flex h-full flex-col">
@@ -80,7 +89,7 @@ export function DashboardNav({
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
-        {dashboardNavItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const href = `${basePath}${item.href}`;
 
           if ("disabled" in item && item.disabled) {

@@ -11,10 +11,14 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 export function DashboardShell({
   restaurantId,
   restaurantName,
+  orderingEnabled = true,
+  rewardsEnabled = true,
   children,
 }: {
   restaurantId: string;
   restaurantName: string;
+  orderingEnabled?: boolean;
+  rewardsEnabled?: boolean;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -41,6 +45,8 @@ export function DashboardShell({
                 restaurantName={restaurantName}
                 mode="mobile"
                 onNavigate={() => setOpen(false)}
+                orderingEnabled={orderingEnabled}
+                rewardsEnabled={rewardsEnabled}
               />
             </SheetContent>
           </Sheet>
@@ -62,6 +68,8 @@ export function DashboardShell({
         <DashboardNav
           restaurantId={restaurantId}
           restaurantName={restaurantName}
+          orderingEnabled={orderingEnabled}
+          rewardsEnabled={rewardsEnabled}
         />
       </aside>
 

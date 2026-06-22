@@ -84,6 +84,16 @@ export async function createGuestOrder(
   const session = await getSessionByToken(sessionToken);
   if (!session) return { error: "Session expired. Please scan the table QR again." };
 
+  const { data: restaurant } = await admin
+    .from("restaurants")
+    .select("ordering_enabled")
+    .eq("id", session.restaurantId)
+    .maybeSingle();
+
+  if (restaurant && (restaurant as { ordering_enabled?: boolean }).ordering_enabled === false) {
+    return { error: "Ordering is currently unavailable" };
+  }
+
   const parsed = submitOrderSchema.safeParse(payload);
   if (!parsed.success) {
     return { error: "Invalid order data" };

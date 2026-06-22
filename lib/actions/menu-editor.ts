@@ -200,6 +200,8 @@ export async function updateSettingsAction(
   const primaryColor = formData.get("primaryColor")?.toString();
   const city = formData.get("city")?.toString();
   const smartSuggestionsEnabled = formData.get("smartSuggestionsEnabled") === "on";
+  const orderingEnabled = formData.get("orderingEnabled") === "on";
+  const rewardsEnabled = formData.get("rewardsEnabled") === "on";
 
   const result = await updateRestaurantSettings(restaurantId, {
     name: name ?? undefined,
@@ -207,6 +209,8 @@ export async function updateSettingsAction(
     primaryColor: primaryColor ?? undefined,
     city: city ?? undefined,
     smartSuggestionsEnabled,
+    orderingEnabled,
+    rewardsEnabled,
   });
 
   if ("error" in result && result.error) {

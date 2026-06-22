@@ -18,6 +18,7 @@ function mapRestaurant(row: {
   cover_image_url: string | null;
   primary_color: string;
   currency: string;
+  ordering_enabled?: boolean | null;
 }): GuestRestaurant {
   return {
     id: row.id,
@@ -28,6 +29,7 @@ function mapRestaurant(row: {
     coverImageUrl: row.cover_image_url,
     primaryColor: row.primary_color,
     currency: row.currency,
+    orderingEnabled: row.ordering_enabled ?? true,
   };
 }
 
@@ -64,10 +66,10 @@ export async function getGuestMenuBySlug(
 ): Promise<GuestMenu | null> {
   const supabase = await createClient();
 
-  const { data: restaurant, error: restaurantError } = await supabase
+  const { data: restaurant, error: restaurantError } = await (supabase as any)
     .from("restaurants")
     .select(
-      "id, slug, name, description, logo_url, cover_image_url, primary_color, currency",
+      "id, slug, name, description, logo_url, cover_image_url, primary_color, currency, ordering_enabled",
     )
     .eq("slug", slug)
     .eq("onboarding_completed", true)

@@ -42,7 +42,7 @@ export function MenuItemCard({
   index?: number;
   onSelect?: (item: GuestMenuItem) => void;
 }) {
-  const { lines, addItem, updateQuantity } = useGuestCart();
+  const { lines, addItem, updateQuantity, orderingEnabled } = useGuestCart();
   const cartLine = lines.find((l) => l.menuItemId === item.id);
   const quantity = cartLine?.quantity ?? 0;
   const dot = DIETARY_DOT[item.dietaryType];
@@ -142,7 +142,7 @@ export function MenuItemCard({
 
       {/* Add / stepper */}
       <div className="relative z-10 flex shrink-0 items-end p-4 pt-0">
-        {quantity > 0 ? (
+        {!orderingEnabled ? null : quantity > 0 ? (
           <div
             className="flex items-center gap-0.5 rounded-lg p-0.5"
             style={{ background: "var(--guest-accent)" }}

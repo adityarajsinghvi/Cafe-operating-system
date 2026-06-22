@@ -26,7 +26,7 @@ export function MenuItemDetailSheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { addItem } = useGuestCart();
+  const { addItem, orderingEnabled } = useGuestCart();
 
   function handleAdd() {
     if (!item) return;
@@ -112,15 +112,17 @@ export function MenuItemDetailSheet({
                   {item.description || "A delicious choice from the menu."}
                 </p>
 
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.98 }}
-                  transition={springGentle}
-                  onClick={handleAdd}
-                  className="mt-8 w-full rounded-2xl bg-[var(--guest-accent)] px-4 py-4 text-base font-semibold text-[var(--guest-accent-foreground)]"
-                >
-                  Add to order
-                </motion.button>
+                {orderingEnabled && (
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.98 }}
+                    transition={springGentle}
+                    onClick={handleAdd}
+                    className="mt-8 w-full rounded-2xl bg-[var(--guest-accent)] px-4 py-4 text-base font-semibold text-[var(--guest-accent-foreground)]"
+                  >
+                    Add to order
+                  </motion.button>
+                )}
               </div>
             </motion.div>
           )}

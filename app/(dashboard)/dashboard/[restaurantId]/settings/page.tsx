@@ -37,6 +37,8 @@ export default async function SettingsPage({
         primaryColor={restaurant.primary_color}
         city={(restaurant as any).city ?? ""}
         smartSuggestionsEnabled={(restaurant as any).smart_suggestions_enabled ?? true}
+        rewardsEnabled={(restaurant as any).rewards_enabled ?? false}
+        orderingEnabled={(restaurant as any).ordering_enabled ?? true}
         tables={tables ?? []}
       />
     </div>

@@ -17,6 +17,7 @@ export function GuestProviders({
   currency,
   tableToken,
   primaryColor,
+  orderingEnabled = true,
   children,
 }: {
   slug: string;
@@ -24,6 +25,7 @@ export function GuestProviders({
   currency: string;
   tableToken?: string;
   primaryColor?: string;
+  orderingEnabled?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -32,6 +34,7 @@ export function GuestProviders({
         restaurantId={restaurantId}
         slug={slug}
         tableToken={tableToken}
+        orderingEnabled={orderingEnabled}
       >
         <GuestShell slug={slug} primaryColor={primaryColor}>
           <GuestTableUrlSync slug={slug} tableToken={tableToken} />

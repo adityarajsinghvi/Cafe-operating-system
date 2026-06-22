@@ -55,15 +55,19 @@ function TabBar({
   active,
   onChange,
   ordersBadge,
+  orderingEnabled,
 }: {
   active: Tab;
   onChange: (t: Tab) => void;
   ordersBadge: boolean;
+  orderingEnabled: boolean;
 }) {
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "discover", label: "Discover", icon: <Sparkles className="h-3 w-3" /> },
     { id: "menu",     label: "Menu",     icon: <UtensilsCrossed className="h-3 w-3" /> },
-    { id: "orders",   label: "Orders",   icon: <Clock className="h-3 w-3" /> },
+    ...(orderingEnabled
+      ? [{ id: "orders" as const, label: "Orders", icon: <Clock className="h-3 w-3" /> }]
+      : []),
   ];
 
   return (
@@ -928,7 +932,12 @@ export function GuestMenuView({ menu }: { menu: GuestMenu }) {
     <div className="mx-auto max-w-lg">
       <RestaurantHero restaurant={menu.restaurant} itemCount={itemCount} categoryCount={menu.categories.length} />
 
-      <TabBar active={activeTab} onChange={handleTabChange} ordersBadge={ordersBadge} />
+      <TabBar
+        active={activeTab}
+        onChange={handleTabChange}
+        ordersBadge={ordersBadge}
+        orderingEnabled={menu.restaurant.orderingEnabled}
+      />
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -940,7 +949,9 @@ export function GuestMenuView({ menu }: { menu: GuestMenu }) {
         >
           {activeTab === "discover" && <DiscoverTab menu={menu} />}
           {activeTab === "menu"     && <MenuTab menu={menu} />}
-          {activeTab === "orders"   && <OrdersTab currency={menu.restaurant.currency} onTabChange={handleTabChange} />}
+          {activeTab === "orders"   && menu.restaurant.orderingEnabled && (
+            <OrdersTab currency={menu.restaurant.currency} onTabChange={handleTabChange} />
+          )}
         </motion.div>
       </AnimatePresence>
 

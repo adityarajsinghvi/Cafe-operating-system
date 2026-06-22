@@ -8,6 +8,7 @@ export function GuestRestaurantLayout({
   currency,
   tableToken,
   primaryColor,
+  orderingEnabled,
   children,
 }: {
   slug: string;
@@ -15,6 +16,7 @@ export function GuestRestaurantLayout({
   currency: string;
   tableToken?: string;
   primaryColor?: string;
+  orderingEnabled?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -24,6 +26,7 @@ export function GuestRestaurantLayout({
       currency={currency}
       tableToken={tableToken}
       primaryColor={primaryColor}
+      orderingEnabled={orderingEnabled}
     >
       {children}
     </GuestProviders>

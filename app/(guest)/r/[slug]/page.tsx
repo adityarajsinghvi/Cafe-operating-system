@@ -47,6 +47,7 @@ export default async function GuestRestaurantPage({
       currency={menu.restaurant.currency}
       tableToken={tableToken}
       primaryColor={menu.restaurant.primaryColor}
+      orderingEnabled={menu.restaurant.orderingEnabled}
     >
       <GuestMenuView menu={menu} />
     </GuestRestaurantLayout>

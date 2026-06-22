@@ -23,7 +23,7 @@ export function FeaturedItemCard({
   primaryColor?: string;
   onSelect: (item: GuestMenuItem) => void;
 }) {
-  const { addItem } = useGuestCart();
+  const { addItem, orderingEnabled } = useGuestCart();
 
   return (
     <motion.div
@@ -99,16 +99,18 @@ export function FeaturedItemCard({
             </p>
           </div>
 
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.88 }}
-            transition={springSnappy}
-            onClick={(e) => { e.stopPropagation(); addItem(item); }}
-            className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white shadow-md transition-opacity hover:opacity-90"
-            aria-label={`Add ${item.name}`}
-          >
-            <Plus className="h-4 w-4" style={{ color: "#c96442" }} />
-          </motion.button>
+          {orderingEnabled && (
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.88 }}
+              transition={springSnappy}
+              onClick={(e) => { e.stopPropagation(); addItem(item); }}
+              className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white shadow-md transition-opacity hover:opacity-90"
+              aria-label={`Add ${item.name}`}
+            >
+              <Plus className="h-4 w-4" style={{ color: "#c96442" }} />
+            </motion.button>
+          )}
         </div>
       </div>
     </motion.div>

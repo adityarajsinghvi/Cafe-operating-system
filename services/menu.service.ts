@@ -526,6 +526,8 @@ export async function updateRestaurantSettings(
     primaryColor?: string;
     city?: string;
     smartSuggestionsEnabled?: boolean;
+    orderingEnabled?: boolean;
+    rewardsEnabled?: boolean;
   },
 ) {
   const ctx = await requireRestaurantAccess(restaurantId);
@@ -537,12 +539,16 @@ export async function updateRestaurantSettings(
     primary_color?: string;
     city?: string | null;
     smart_suggestions_enabled?: boolean;
+    ordering_enabled?: boolean;
+    rewards_enabled?: boolean;
   } = {};
   if (updates.name !== undefined) patch.name = updates.name.trim();
   if (updates.description !== undefined) patch.description = updates.description;
   if (updates.primaryColor !== undefined) patch.primary_color = updates.primaryColor;
   if (updates.city !== undefined) patch.city = updates.city.trim() || null;
   if (updates.smartSuggestionsEnabled !== undefined) patch.smart_suggestions_enabled = updates.smartSuggestionsEnabled;
+  if (updates.orderingEnabled !== undefined) patch.ordering_enabled = updates.orderingEnabled;
+  if (updates.rewardsEnabled !== undefined) patch.rewards_enabled = updates.rewardsEnabled;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (ctx.admin as any)

@@ -9,6 +9,7 @@ export type GuestRestaurant = {
   coverImageUrl: string | null;
   primaryColor: string;
   currency: string;
+  orderingEnabled: boolean;
 };
 
 export type GuestMenuItem = {

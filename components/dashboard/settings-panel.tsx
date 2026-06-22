@@ -45,6 +45,8 @@ export function SettingsPanel({
   primaryColor,
   city,
   smartSuggestionsEnabled,
+  rewardsEnabled,
+  orderingEnabled,
   tables,
 }: {
   restaurantId: string;
@@ -55,6 +57,8 @@ export function SettingsPanel({
   primaryColor: string;
   city: string;
   smartSuggestionsEnabled: boolean;
+  rewardsEnabled: boolean;
+  orderingEnabled: boolean;
   tables: RestaurantTable[];
 }) {
   const [settingsMessage, setSettingsMessage] = useState<string | null>(null);
@@ -236,6 +240,44 @@ export function SettingsPanel({
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   Show an AI-powered contextual suggestion on the guest menu based on weather,
                   time of day, and the customer&apos;s taste profile.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
+              <input
+                type="checkbox"
+                id="orderingEnabled"
+                name="orderingEnabled"
+                defaultChecked={orderingEnabled}
+                className="mt-0.5 h-4 w-4 cursor-pointer accent-primary"
+              />
+              <div>
+                <Label htmlFor="orderingEnabled" className="cursor-pointer font-medium">
+                  🧾 Table ordering
+                </Label>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Let guests add items to a cart and place orders from the table QR menu. Turn
+                  this off to show a read-only digital menu only.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
+              <input
+                type="checkbox"
+                id="rewardsEnabled"
+                name="rewardsEnabled"
+                defaultChecked={rewardsEnabled}
+                className="mt-0.5 h-4 w-4 cursor-pointer accent-primary"
+              />
+              <div>
+                <Label htmlFor="rewardsEnabled" className="cursor-pointer font-medium">
+                  🎁 Loyalty & rewards
+                </Label>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Let guests earn points toward a reward. Manage the reward title and thresholds
+                  from the Rewards page.
                 </p>
               </div>
             </div>

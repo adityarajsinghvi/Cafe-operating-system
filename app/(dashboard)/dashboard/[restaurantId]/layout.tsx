@@ -42,6 +42,8 @@ export default async function RestaurantDashboardLayout({
     <DashboardShell
       restaurantId={restaurant.id}
       restaurantName={restaurant.name}
+      orderingEnabled={(restaurant as any).ordering_enabled ?? true}
+      rewardsEnabled={(restaurant as any).rewards_enabled ?? false}
     >
       {children}
     </DashboardShell>
