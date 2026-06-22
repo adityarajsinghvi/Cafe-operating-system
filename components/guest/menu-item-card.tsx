@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Minus, Plus } from "lucide-react";
+import { Flame, Minus, Plus, Star } from "lucide-react";
 
 import { useGuestCart } from "@/components/guest/guest-cart-provider";
 import { cn } from "@/lib/utils";
@@ -61,17 +61,6 @@ export function MenuItemCard({
         className,
       )}
     >
-      {/* Ruled lines texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(transparent,transparent 23px,rgba(218,217,212,0.5) 23px,rgba(218,217,212,0.5) 24px)",
-          backgroundPosition: "0 12px",
-        }}
-        aria-hidden
-      />
-
       {/* Left-side thumbnail */}
       {item.imageUrl && (
         <div className="relative h-auto w-24 shrink-0 overflow-hidden sm:w-28">
@@ -103,18 +92,18 @@ export function MenuItemCard({
           )}
           {item.isSpecial && (
             <span
-              className="rounded-sm px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+              className="inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
               style={{ background: "#fff3e0", color: "#b05730", border: "1px solid #e8c9a0" }}
             >
-              ⭐ Special
+              <Star className="h-2.5 w-2.5" fill="currentColor" /> Special
             </span>
           )}
           {item.isPopular && !item.isSpecial && (
             <span
-              className="rounded-sm px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+              className="inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
               style={{ background: "#fdf0ec", color: "#c96442", border: "1px solid #e8c4b4" }}
             >
-              🔥 Popular
+              <Flame className="h-2.5 w-2.5" /> Popular
             </span>
           )}
         </div>

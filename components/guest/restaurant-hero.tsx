@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { MapPin, UtensilsCrossed } from "lucide-react";
 
 import type { GuestMenu } from "@/types/guest";
 
@@ -93,14 +93,14 @@ export function RestaurantHero({
           className="mt-3 flex flex-wrap items-center gap-2"
         >
           <span
-            className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold"
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold"
             style={{
               background: "rgba(250,249,245,0.1)",
               color: "rgba(250,249,245,0.65)",
               border: "1px solid rgba(250,249,245,0.12)",
             }}
           >
-            🍽️ {itemCount} dishes · {categoryCount} categories
+            <UtensilsCrossed className="h-3 w-3" /> {itemCount} dishes · {categoryCount} categories
           </span>
         </motion.div>
       </div>

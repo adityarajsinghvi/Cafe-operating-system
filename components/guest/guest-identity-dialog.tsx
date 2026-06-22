@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, X } from "lucide-react";
+import { Loader2, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { useGuestCart } from "@/components/guest/guest-cart-provider";
@@ -98,9 +98,9 @@ export function GuestIdentityDialog({ open, onClose, onConfirm }: Props) {
               </button>
 
               {/* Icon */}
-              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-2xl shadow-sm"
-                style={{ background: "rgba(250,249,245,0.12)" }}>
-                ✨
+              <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm"
+                style={{ background: "rgba(250,249,245,0.12)", color: "var(--guest-header-ink)" }}>
+                <Sparkles className="h-5 w-5" />
               </div>
 
               <h2 className="text-xl font-bold tracking-tight" style={{ color: "var(--guest-header-ink)", fontFamily: "Georgia, serif" }}>
@@ -110,15 +110,6 @@ export function GuestIdentityDialog({ open, onClose, onConfirm }: Props) {
                 We&apos;ll remember your favourites and personalise every visit.
               </p>
             </div>
-
-            {/* Torn paper SVG edge */}
-            <svg viewBox="0 0 400 10" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
-              className="block w-full" style={{ height: 10, marginTop: -1 }} aria-hidden>
-              <path d="M0,0 L0,10 L10,3 L20,9 L30,2 L40,8 L50,2 L60,9 L70,3 L80,8 L90,2 L100,9 L110,3 L120,8 L130,2 L140,9 L150,3 L160,8 L170,2 L180,9 L190,3 L200,8 L210,2 L220,9 L230,3 L240,8 L250,2 L260,9 L270,3 L280,8 L290,2 L300,9 L310,3 L320,8 L330,2 L340,9 L350,3 L360,8 L370,2 L380,9 L390,3 L400,8 L400,0 Z"
-                style={{ fill: "var(--guest-header-bg)" }} />
-              <path d="M0,10 L10,3 L20,9 L30,2 L40,8 L50,2 L60,9 L70,3 L80,8 L90,2 L100,9 L110,3 L120,8 L130,2 L140,9 L150,3 L160,8 L170,2 L180,9 L190,3 L200,8 L210,2 L220,9 L230,3 L240,8 L250,2 L260,9 L270,3 L280,8 L290,2 L300,9 L310,3 L320,8 L330,2 L340,9 L350,3 L360,8 L370,2 L380,9 L390,3 L400,8 L400,10 Z"
-                fill="var(--guest-surface)" />
-            </svg>
 
             {/* Fields */}
             <div className="space-y-3 px-6 pb-2 pt-4">

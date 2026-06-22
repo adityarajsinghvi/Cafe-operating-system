@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, CheckCircle2, Droplets, Loader2, Minus, Plus, Receipt, Trash2 } from "lucide-react";
+import { BellRing, CheckCircle2, Droplets, Loader2, Minus, Plus, Receipt, Trash2 } from "lucide-react";
 import React, { useRef, useState, useTransition } from "react";
 
 import { GuestIdentityDialog, useIdentityDialog } from "@/components/guest/guest-identity-dialog";
@@ -95,13 +95,6 @@ function SuccessOverlay({ visible }: { visible: boolean }) {
           className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-t-3xl"
           style={{ background: "var(--guest-header-bg)" }}
         >
-          {/* Subtle ruled lines on the dark surface */}
-          <div
-            className="pointer-events-none absolute inset-0 rounded-t-3xl opacity-[0.06]"
-            style={{
-              backgroundImage: "repeating-linear-gradient(transparent,transparent 23px,rgba(250,249,245,1) 23px,rgba(250,249,245,1) 24px)",
-            }}
-          />
           <motion.div
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -292,13 +285,13 @@ export function GuestCartSheet({ currency }: { currency: string }) {
 
                   {itemCount > 0 && (
                     <div
-                      className="chit-stamp h-11 w-11 shrink-0 flex-col gap-0 text-[8px]"
-                      style={{ borderColor: "#c96442", color: "#c96442", background: "rgba(201,100,66,0.12)" }}
+                      className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl border text-[8px]"
+                      style={{ borderColor: "rgba(201,100,66,0.4)", background: "rgba(201,100,66,0.12)" }}
                     >
                       <span className="text-base font-black leading-none" style={{ color: "var(--guest-header-ink)" }}>
                         {itemCount}
                       </span>
-                      <span style={{ color: "rgba(250,249,245,0.5)" }}>ITEMS</span>
+                      <span className="font-bold uppercase tracking-wide" style={{ color: "rgba(250,249,245,0.5)" }}>ITEMS</span>
                     </div>
                   )}
                 </div>
@@ -412,9 +405,9 @@ export function GuestCartSheet({ currency }: { currency: string }) {
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       {[
-                        { type: "waiter" as const, label: "Waiter", emoji: "🛎️" },
-                        { type: "water" as const,  label: "Water",  emoji: "💧" },
-                        { type: "bill"  as const,  label: "Bill",   emoji: "🧾" },
+                        { type: "waiter" as const, label: "Waiter", icon: BellRing },
+                        { type: "water" as const,  label: "Water",  icon: Droplets },
+                        { type: "bill"  as const,  label: "Bill",   icon: Receipt },
                       ].map((action) => (
                         <button
                           key={action.type}
@@ -422,7 +415,7 @@ export function GuestCartSheet({ currency }: { currency: string }) {
                           className="flex flex-col items-center justify-center gap-1 rounded-xl border border-[var(--guest-border)] bg-[var(--guest-surface)] py-3.5 text-xs font-semibold text-[var(--guest-ink)] transition-colors active:bg-[var(--guest-border)]"
                           onClick={() => handleService(action.type)}
                         >
-                          <span className="text-base">{action.emoji}</span>
+                          <action.icon className="h-[1.125rem] w-[1.125rem]" />
                           {action.label}
                         </button>
                       ))}

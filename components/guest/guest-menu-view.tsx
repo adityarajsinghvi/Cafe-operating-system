@@ -2,11 +2,13 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Bell,
+  BellRing,
   ChevronDown,
   ChevronUp,
   Clock,
   Droplets,
+  Flame,
+  Gift,
   Loader2,
   Receipt,
   Search,
@@ -249,9 +251,9 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
           >
             <div className="px-4 py-3.5">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xl"
-                  style={{ background: "#fdf4ef" }}>
-                  {pointsNeeded === 0 ? "🎁" : "⭐"}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                  style={{ background: "#fdf4ef", color: "#c96442" }}>
+                  {pointsNeeded === 0 ? <Gift className="h-5 w-5" /> : <Star className="h-5 w-5" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold text-[var(--guest-ink)]">
@@ -440,9 +442,9 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
           <p className="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-[var(--guest-ink-muted)]">Need help?</p>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { type: "waiter" as const, label: "Call Waiter", emoji: "🛎️" },
-              { type: "water"  as const, label: "Water",       emoji: "💧" },
-              { type: "bill"   as const, label: "Bring Bill",  emoji: "🧾" },
+              { type: "waiter" as const, label: "Call Waiter", icon: BellRing },
+              { type: "water"  as const, label: "Water",       icon: Droplets },
+              { type: "bill"   as const, label: "Bring Bill",  icon: Receipt },
             ].map((a) => (
               <button
                 key={a.type}
@@ -450,7 +452,7 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
                 onClick={() => handleService(a.type)}
                 className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-[var(--guest-border)] bg-[var(--guest-surface)] py-4 text-xs font-semibold text-[var(--guest-ink)] transition-all active:scale-95 hover:border-[var(--guest-accent)]/30"
               >
-                <span className="text-lg">{a.emoji}</span>
+                <a.icon className="h-[1.125rem] w-[1.125rem]" />
                 {a.label}
               </button>
             ))}
@@ -482,7 +484,7 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
       {/* Popular */}
       {!aiResults && menu.popularItems.length > 0 && (
         <div className="mb-6">
-          <SectionHeading>🔥 Most Popular</SectionHeading>
+          <SectionHeading><Flame className="inline h-4 w-4 -translate-y-px" /> Most Popular</SectionHeading>
           <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-6 sm:px-6">
             {menu.popularItems.map((item) => (
               <FeaturedItemCard key={item.id} item={item} currency={menu.restaurant.currency}
@@ -496,7 +498,7 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
       {!aiResults && menu.specialItems.length === 0 && menu.popularItems.length === 0 && (
         allItems.length > 0 ? (
           <div className="mb-6">
-            <SectionHeading>🍽️ From the Menu</SectionHeading>
+            <SectionHeading><UtensilsCrossed className="inline h-4 w-4 -translate-y-px" /> From the Menu</SectionHeading>
             <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-6 sm:px-6">
               {allItems.slice(0, 8).map((item) => (
                 <FeaturedItemCard key={item.id} item={item} currency={menu.restaurant.currency}
@@ -766,9 +768,9 @@ function OrdersTab({ currency, onTabChange }: { currency: string; onTabChange: (
   }
 
   const serviceActions = [
-    { type: "waiter" as const, label: "Call waiter", emoji: "🛎️" },
-    { type: "water"  as const, label: "Water",       emoji: "💧" },
-    { type: "bill"   as const, label: "Get bill",    emoji: "🧾" },
+    { type: "waiter" as const, label: "Call waiter", icon: BellRing },
+    { type: "water"  as const, label: "Water",       icon: Droplets },
+    { type: "bill"   as const, label: "Get bill",    icon: Receipt },
   ];
 
   return (
@@ -852,15 +854,9 @@ function OrdersTab({ currency, onTabChange }: { currency: string; onTabChange: (
               At the table
             </p>
             <p className="text-sm font-black" style={{ color: "var(--guest-header-ink)", fontFamily: "Georgia, serif" }}>
-              Need something? 🙋
+              Need something?
             </p>
           </div>
-
-          {/* Torn paper edge */}
-          <svg viewBox="0 0 400 8" preserveAspectRatio="none" className="block w-full" style={{ height: 8, marginTop: -1 }}>
-            <path d="M0,0 L0,8 L10,2 L20,7 L30,1 L40,7 L50,1 L60,7 L70,2 L80,7 L90,1 L100,7 L110,2 L120,7 L130,1 L140,7 L150,2 L160,7 L170,1 L180,7 L190,2 L200,7 L210,1 L220,7 L230,2 L240,7 L250,1 L260,7 L270,2 L280,7 L290,1 L300,7 L310,2 L320,7 L330,1 L340,7 L350,2 L360,7 L370,1 L380,7 L390,2 L400,6 L400,0 Z" style={{ fill: "var(--guest-header-bg)" }} />
-            <path d="M0,8 L10,2 L20,7 L30,1 L40,7 L50,1 L60,7 L70,2 L80,7 L90,1 L100,7 L110,2 L120,7 L130,1 L140,7 L150,2 L160,7 L170,1 L180,7 L190,2 L200,7 L210,1 L220,7 L230,2 L240,7 L250,1 L260,7 L270,2 L280,7 L290,1 L300,7 L310,2 L320,7 L330,1 L340,7 L350,2 L360,7 L370,1 L380,7 L390,2 L400,6 L400,8 Z" fill="var(--guest-surface)" />
-          </svg>
 
           {/* Buttons */}
           <div className="grid grid-cols-3 gap-2.5 px-4 pb-4 pt-3" style={{ background: "var(--guest-surface)" }}>
@@ -875,7 +871,7 @@ function OrdersTab({ currency, onTabChange }: { currency: string; onTabChange: (
               >
                 {serviceLoading === action.type
                   ? <Loader2 className="h-4 w-4 animate-spin" style={{ color: "var(--guest-accent)" }} />
-                  : <span className="text-xl">{action.emoji}</span>
+                  : <action.icon className="h-5 w-5" />
                 }
                 <span style={{ fontFamily: "Georgia, serif" }}>{action.label}</span>
               </button>
