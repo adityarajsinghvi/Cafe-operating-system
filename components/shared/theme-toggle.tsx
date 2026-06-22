@@ -16,12 +16,20 @@ export function ThemeToggle() {
     return <Button variant="ghost" size="icon" className="rounded-xl" disabled />;
   }
 
+  function toggle() {
+    const next = resolvedTheme === "dark" ? "light" : "dark";
+    // Write directly so the blocking script picks it up on next load
+    try { localStorage.setItem("parcha-theme", next); } catch (_) {}
+    document.documentElement.classList.toggle("dark", next === "dark");
+    setTheme(next);
+  }
+
   return (
     <Button
       variant="ghost"
       size="icon"
       className="rounded-xl"
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      onClick={toggle}
       aria-label="Toggle theme"
     >
       {resolvedTheme === "dark" ? (

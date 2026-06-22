@@ -57,6 +57,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Blocking script — runs before first paint, prevents dark→light flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('parcha-theme');if(t==='dark'){document.documentElement.classList.add('dark')}else if(!t){document.documentElement.classList.remove('dark')}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${geistMono.variable} ${calistoga.variable} min-h-screen antialiased`}
       >
