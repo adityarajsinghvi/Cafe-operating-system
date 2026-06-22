@@ -209,7 +209,7 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
   const pointsNeeded = loyalty ? Math.max(0, loyalty.redemptionThreshold - loyalty.points) : 0;
 
   return (
-    <div className="parcha-ruled px-4 pt-4 sm:px-6" style={{ backgroundPosition: "0 0", paddingBottom: "7rem" }}>
+    <div className="px-4 pt-4 sm:px-6" style={{ paddingBottom: "7rem" }}>
       {/* Welcome banner */}
       <AnimatePresence>
         {customerName && !welcomeDismissed && (
@@ -649,7 +649,7 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
         <div className="mx-4 border-t border-dashed border-[var(--guest-border)] sm:mx-6" />
       </div>
 
-      <div className="parcha-ruled px-4 pt-5 sm:px-6" style={{ backgroundPosition: "0 0" }}>
+      <div className="px-4 pt-5 sm:px-6">
         {filteredCategories.length === 0 ? (
           <div className="rounded-xl border border-dashed border-[var(--guest-border)] px-6 py-14 text-center">
             <p className="text-3xl mb-2">🍽️</p>
@@ -772,7 +772,7 @@ function OrdersTab({ currency, onTabChange }: { currency: string; onTabChange: (
   ];
 
   return (
-    <div className="parcha-ruled px-4 pb-28 pt-4 sm:px-6 space-y-5">
+    <div className="px-4 pb-28 pt-4 sm:px-6 space-y-5">
 
       {/* Orders section */}
       <div>

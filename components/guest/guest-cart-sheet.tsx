@@ -312,8 +312,8 @@ export function GuestCartSheet({ currency }: { currency: string }) {
 
               {/* Scrollable paper body — flex-1 so footer CTA is always visible */}
               <div
-                className="parcha-ruled min-h-0 flex-1 overflow-y-auto px-5 pb-2"
-                style={{ backgroundPosition: "0 0", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+                className="min-h-0 flex-1 overflow-y-auto px-5 pb-2"
+                style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
               >
                 {lines.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-14 text-center">

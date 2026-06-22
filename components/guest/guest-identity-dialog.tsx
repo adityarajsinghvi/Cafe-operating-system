@@ -121,7 +121,7 @@ export function GuestIdentityDialog({ open, onClose, onConfirm }: Props) {
             </svg>
 
             {/* Fields */}
-            <div className="parcha-ruled space-y-3 px-6 pb-2 pt-4" style={{ backgroundPosition: "0 0" }}>
+            <div className="space-y-3 px-6 pb-2 pt-4">
               <div>
                 <label
                   htmlFor="identity-name"
