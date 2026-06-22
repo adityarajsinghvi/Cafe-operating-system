@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Plus, Sparkles, Star } from "lucide-react";
+import { Plus, Sparkles, Star, UtensilsCrossed } from "lucide-react";
 
 import { DietaryBadge } from "@/components/onboarding/dietary-badge";
 import { useGuestCart } from "@/components/guest/guest-cart-provider";
@@ -52,9 +52,11 @@ export function FeaturedItemCard({
         </div>
       ) : (
         <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(145deg, #e8c4a8 0%, #c96442 100%)" }}
-        />
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ background: "var(--guest-accent-soft)" }}
+        >
+          <UtensilsCrossed className="h-8 w-8" style={{ color: "var(--guest-accent)", opacity: 0.3 }} />
+        </div>
       )}
 
       {/* Scrim */}
