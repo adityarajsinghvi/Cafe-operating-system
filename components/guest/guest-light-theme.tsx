@@ -1,39 +1,30 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { useEffect, useRef, type ReactNode } from "react";
 
-/**
- * Locks the guest experience to light mode and restores the user's
- * theme preference when they leave the guest route.
- */
+const KEY = "parcha-theme";
+
 export function GuestLightTheme({ children }: { children: ReactNode }) {
-  const { setTheme } = useTheme();
-  const previousTheme = useRef<string>("system");
+  const wasDark = useRef(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored) {
-      previousTheme.current = stored;
-    } else if (document.documentElement.classList.contains("dark")) {
-      previousTheme.current = "dark";
-    }
+    // Remember whether the owner had dark mode on before entering guest view
+    wasDark.current = document.documentElement.classList.contains("dark");
 
     document.documentElement.classList.remove("dark");
     document.documentElement.style.colorScheme = "light";
     document.body.classList.add("guest-route");
-    setTheme("light");
 
     return () => {
       document.body.classList.remove("guest-route");
       document.documentElement.style.colorScheme = "";
 
-      const restore = previousTheme.current;
-      if (restore && restore !== "light") {
-        setTheme(restore);
+      // Restore dark mode if it was active before
+      if (wasDark.current) {
+        document.documentElement.classList.add("dark");
       }
     };
-  }, [setTheme]);
+  }, []);
 
   return children;
 }

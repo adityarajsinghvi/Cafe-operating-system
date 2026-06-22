@@ -61,7 +61,7 @@ export default function RootLayout({
         {/* Blocking script — runs before first paint, prevents dark→light flash */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('parcha-theme');if(t==='dark'){document.documentElement.classList.add('dark')}else if(!t){document.documentElement.classList.remove('dark')}}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem('parcha-theme');document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})()`,
           }}
         />
       </head>
