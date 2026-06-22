@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   motion,
@@ -587,6 +588,41 @@ export default function HomePage() {
     <div className="overflow-x-hidden" style={{ background: C.paper }}>
       <SpringCursor />
 
+      {/* ── Sticky nav ────────────────────────────────────────────────────── */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 lg:px-16"
+        style={{
+          background: "rgba(61,57,41,0.85)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(250,249,245,0.08)",
+        }}
+      >
+        <Image
+          src="/parcha-logo.png"
+          alt="Parcha"
+          width={100}
+          height={50}
+          className="object-contain"
+          priority
+        />
+        <div className="flex items-center gap-3">
+          <Link
+            href="/login"
+            className="text-sm font-semibold transition-opacity hover:opacity-70"
+            style={{ color: "rgba(250,249,245,0.7)" }}
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-xl px-4 py-2 text-sm font-bold text-white transition-all hover:-translate-y-px"
+            style={{ background: C.terracotta }}
+          >
+            Get started
+          </Link>
+        </div>
+      </nav>
+
       {/* ══════════════════════════════════════════════════════════════════════
           HERO
       ══════════════════════════════════════════════════════════════════════ */}
@@ -604,7 +640,7 @@ export default function HomePage() {
           }}
         />
 
-        <div className="relative mx-auto flex max-w-7xl flex-col items-start justify-center gap-16 px-6 pb-0 pt-24 md:flex-row md:items-center md:pt-20 lg:px-16">
+        <div className="relative mx-auto flex max-w-7xl flex-col items-start justify-center gap-16 px-6 pb-0 pt-32 md:flex-row md:items-center md:pt-28 lg:px-16">
           {/* Left — copy */}
           <motion.div className="flex-1 md:max-w-[52%]" style={{ y: heroY }}>
             {/* Badge */}
