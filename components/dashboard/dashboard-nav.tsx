@@ -9,6 +9,7 @@ import { SheetClose } from "@/components/ui/sheet";
 
 export const dashboardNavItems = [
   { label: "Dashboard", href: "" },
+  { label: "Analytics", href: "/analytics" },
   { label: "Menu", href: "/menu" },
   { label: "Orders", href: "/orders", flag: "ordering" as const },
   { label: "History", href: "/history" },
