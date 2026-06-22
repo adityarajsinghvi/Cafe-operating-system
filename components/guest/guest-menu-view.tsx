@@ -488,6 +488,27 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
         </div>
       )}
 
+      {/* Fallback: nothing curated as special/popular yet — still show real menu items */}
+      {!aiResults && menu.specialItems.length === 0 && menu.popularItems.length === 0 && (
+        allItems.length > 0 ? (
+          <div className="mb-6">
+            <SectionHeading>🍽️ From the Menu</SectionHeading>
+            <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-6 sm:px-6">
+              {allItems.slice(0, 8).map((item) => (
+                <FeaturedItemCard key={item.id} item={item} currency={menu.restaurant.currency}
+                  accent="menu" primaryColor={menu.restaurant.primaryColor} onSelect={setSelectedItem} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mb-6 rounded-xl border border-dashed border-[var(--guest-border)] px-6 py-14 text-center">
+            <p className="text-3xl mb-2">🍽️</p>
+            <p className="text-sm font-semibold text-[var(--guest-ink)]">Menu coming soon</p>
+            <p className="mt-1 text-xs text-[var(--guest-ink-muted)]">Check back shortly — we&apos;re getting things ready.</p>
+          </div>
+        )
+      )}
+
       <MenuItemDetailSheet item={selectedItem} currency={menu.restaurant.currency}
         open={Boolean(selectedItem)} onOpenChange={(o) => { if (!o) setSelectedItem(null); }} />
     </div>

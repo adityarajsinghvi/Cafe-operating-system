@@ -19,7 +19,7 @@ export function FeaturedItemCard({
 }: {
   item: GuestMenuItem;
   currency: string;
-  accent?: "special" | "popular";
+  accent?: "special" | "popular" | "menu";
   primaryColor?: string;
   onSelect: (item: GuestMenuItem) => void;
 }) {
@@ -67,19 +67,21 @@ export function FeaturedItemCard({
       />
 
       {/* Badge — top left */}
-      <div className="absolute left-3 top-3 z-10">
-        {accent === "special" ? (
-          <span className="inline-flex items-center gap-1 rounded-sm bg-amber-400/95 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-950 shadow-sm">
-            <Sparkles className="h-2.5 w-2.5" />
-            Special
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1 rounded-sm bg-white/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide shadow-sm" style={{ color: "#c96442" }}>
-            <Star className="h-2.5 w-2.5" />
-            Popular
-          </span>
-        )}
-      </div>
+      {accent !== "menu" && (
+        <div className="absolute left-3 top-3 z-10">
+          {accent === "special" ? (
+            <span className="inline-flex items-center gap-1 rounded-sm bg-amber-400/95 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-950 shadow-sm">
+              <Sparkles className="h-2.5 w-2.5" />
+              Special
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 rounded-sm bg-white/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide shadow-sm" style={{ color: "#c96442" }}>
+              <Star className="h-2.5 w-2.5" />
+              Popular
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Bottom overlay */}
       <div className="absolute bottom-0 left-0 right-0 z-10 p-3">
