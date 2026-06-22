@@ -8,12 +8,7 @@ import { getRestaurantById } from "@/services/restaurants.service";
 import { archiveExpiredTableSessions } from "@/services/tables.service";
 import type { OrderStatus } from "@/types/order";
 
-const ACTIVE_STATUSES: OrderStatus[] = [
-  "pending",
-  "confirmed",
-  "preparing",
-  "ready",
-];
+const ACTIVE_STATUSES: OrderStatus[] = ["pending", "confirmed"];
 
 export default async function OrdersPage({
   params,

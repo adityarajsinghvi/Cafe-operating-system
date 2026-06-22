@@ -7,13 +7,7 @@ export type ExtractionJobStatus =
   | "completed"
   | "failed";
 export type DietaryType = "veg" | "non_veg" | "egg" | "vegan" | "unknown";
-export type OrderStatus =
-  | "pending"
-  | "confirmed"
-  | "preparing"
-  | "ready"
-  | "served"
-  | "cancelled";
+export type OrderStatus = "pending" | "confirmed" | "served" | "cancelled";
 export type ServiceRequestType = "waiter" | "water" | "bill";
 export type ServiceRequestStatus = "open" | "acknowledged" | "resolved";
 export type BillPaymentStatus = "unpaid" | "paid";

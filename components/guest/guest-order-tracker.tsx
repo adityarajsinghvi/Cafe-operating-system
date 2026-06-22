@@ -88,9 +88,9 @@ function OrderDetail({
         </div>
       </div>
 
-      {order.status === "ready" && (
+      {order.status === "confirmed" && (
         <div className="rounded-2xl bg-amber-500/15 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:text-amber-200">
-          {meta.emoji} Your food is on its way!
+          {meta.emoji} The kitchen is on it!
         </div>
       )}
     </motion.div>

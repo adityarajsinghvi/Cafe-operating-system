@@ -8,12 +8,7 @@ import { updateOrderStatusAction } from "@/lib/actions/orders";
 import { springSnappy } from "@/lib/motion/presets";
 import { cn } from "@/lib/utils";
 import type { Order } from "@/types/order";
-import {
-  formatOrderTotal,
-  getNextOrderStatus,
-  ORDER_STATUS_FLOW,
-  ORDER_STATUS_LABELS,
-} from "@/types/order";
+import { formatOrderTotal, ORDER_STATUS_FLOW } from "@/types/order";
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -30,17 +25,8 @@ const STATUS_STAMP: Record<
 > = {
   pending:   { label: "PENDING",   border: "#d97706", color: "#92400e", bg: "#fffbeb" },
   confirmed: { label: "CONFIRMED", border: "#2563eb", color: "#1e40af", bg: "#eff6ff" },
-  preparing: { label: "KITCHEN",   border: "#ea580c", color: "#9a3412", bg: "#fff7ed" },
-  ready:     { label: "READY",     border: "#16a34a", color: "#14532d", bg: "#f0fdf4" },
   served:    { label: "SERVED",    border: "#6b7280", color: "#374151", bg: "#f9fafb" },
   cancelled: { label: "CANCELLED", border: "#dc2626", color: "#7f1d1d", bg: "#fef2f2" },
-};
-
-const NEXT_LABEL: Record<string, string> = {
-  pending:   "Confirm order →",
-  confirmed: "Start cooking →",
-  preparing: "Mark ready →",
-  ready:     "Mark served →",
 };
 
 export function OrderCard({
@@ -55,13 +41,12 @@ export function OrderCard({
   onUpdated?: () => void;
 }) {
   const [isUpdating, startUpdate] = useTransition();
-  const nextStatus = getNextOrderStatus(order.status);
   const currentIndex = ORDER_STATUS_FLOW.indexOf(order.status);
   const stamp = STATUS_STAMP[order.status] ?? STATUS_STAMP.pending;
+  const isServed = order.status === "served";
+  const isCancelled = order.status === "cancelled";
 
-  function advanceStatus(target?: Order["status"]) {
-    const status = target ?? nextStatus;
-    if (!status) return;
+  function setStatus(status: Order["status"]) {
     startUpdate(async () => {
       await updateOrderStatusAction(restaurantId, order.id, status);
       onUpdated?.();
@@ -175,29 +160,27 @@ export function OrderCard({
           {formatOrderTotal(order.subtotalCents, currency)}
         </span>
 
-        <div className="flex items-center gap-2">
-          {order.status !== "served" && order.status !== "cancelled" && nextStatus !== "served" && nextStatus && (
+        {!isServed && !isCancelled && (
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              disabled={isUpdating}
-              onClick={() => advanceStatus("served")}
+              disabled={isUpdating || order.status === "confirmed"}
+              onClick={() => setStatus("confirmed")}
               className="rounded-lg border border-border px-3 py-2 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
             >
-              Mark served
+              {order.status === "confirmed" ? "Confirmed ✓" : "Confirm order"}
             </button>
-          )}
-          {nextStatus && (
             <button
               type="button"
               disabled={isUpdating}
-              onClick={() => advanceStatus()}
+              onClick={() => setStatus("served")}
               className="rounded-lg px-3.5 py-2 text-[11px] font-bold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
               style={{ background: "#c96442" }}
             >
-              {NEXT_LABEL[order.status] ?? `Mark ${ORDER_STATUS_LABELS[nextStatus].toLowerCase()} →`}
+              Order served
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

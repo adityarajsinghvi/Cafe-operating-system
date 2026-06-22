@@ -179,7 +179,7 @@ export function GuestCartProvider({
       for (const order of orders) {
         const prev = previousStatusRef.current[order.id];
         if (prev && prev !== order.status) {
-          if (order.status === "ready" || order.status === "served") {
+          if (order.status === "confirmed" || order.status === "served") {
             setTrackerOpen(true);
             setFocusOrderId(order.id);
           }

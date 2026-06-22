@@ -5,8 +5,6 @@ import type { DietaryType } from "@/types/database";
 export const orderStatusSchema = z.enum([
   "pending",
   "confirmed",
-  "preparing",
-  "ready",
   "served",
   "cancelled",
 ]);
@@ -25,16 +23,12 @@ export type ServiceRequestStatus = z.infer<typeof serviceRequestStatusSchema>;
 export const ORDER_STATUS_FLOW: OrderStatus[] = [
   "pending",
   "confirmed",
-  "preparing",
-  "ready",
   "served",
 ];
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending: "New",
   confirmed: "Confirmed",
-  preparing: "Preparing",
-  ready: "Ready",
   served: "Served",
   cancelled: "Cancelled",
 };
@@ -42,8 +36,6 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 export const ORDER_STATUS_BADGE_CLASS: Record<OrderStatus, string> = {
   pending: "bg-amber-100 text-amber-900",
   confirmed: "bg-sky-100 text-sky-900",
-  preparing: "bg-violet-100 text-violet-900",
-  ready: "bg-emerald-100 text-emerald-900",
   served: "bg-muted text-muted-foreground",
   cancelled: "bg-destructive/10 text-destructive",
 };
@@ -65,18 +57,8 @@ export const GUEST_ORDER_STATUS: Record<
   },
   confirmed: {
     label: "Confirmed",
-    description: "Your order is locked in",
-    emoji: "✅",
-  },
-  preparing: {
-    label: "Cooking",
-    description: "The chef is preparing your food",
+    description: "The kitchen is preparing your order",
     emoji: "👨‍🍳",
-  },
-  ready: {
-    label: "Ready!",
-    description: "Your order is on its way to the table",
-    emoji: "🔔",
   },
   served: {
     label: "Served",
@@ -90,12 +72,7 @@ export const GUEST_ORDER_STATUS: Record<
   },
 };
 
-export const GUEST_TRACKABLE_STATUSES: OrderStatus[] = [
-  "pending",
-  "confirmed",
-  "preparing",
-  "ready",
-];
+export const GUEST_TRACKABLE_STATUSES: OrderStatus[] = ["pending", "confirmed"];
 
 export const cartLineSchema = z.object({
   menuItemId: z.string().uuid(),

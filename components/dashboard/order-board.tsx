@@ -9,19 +9,7 @@ import { useRestaurantRealtime } from "@/hooks/use-restaurant-realtime";
 import { playNewOrderSound } from "@/lib/dashboard/order-notifications";
 import type { Order, OrderStatus } from "@/types/order";
 
-const ACTIVE_STATUSES: OrderStatus[] = [
-  "pending",
-  "confirmed",
-  "preparing",
-  "ready",
-];
-
-const COLUMNS: { status: OrderStatus; label: string }[] = [
-  { status: "pending", label: "New" },
-  { status: "confirmed", label: "Confirmed" },
-  { status: "preparing", label: "Preparing" },
-  { status: "ready", label: "Ready" },
-];
+const ACTIVE_STATUSES: OrderStatus[] = ["pending", "confirmed"];
 
 export function OrderBoard({
   restaurantId,
@@ -128,45 +116,24 @@ export function OrderBoard({
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {COLUMNS.map((column) => {
-            const columnOrders = activeOrders.filter(
-              (order) => order.status === column.status,
-            );
-
-            return (
-              <div key={column.status} className="space-y-3">
-                <div className="flex items-center justify-between border-b border-dashed border-border pb-2">
-                  <h3
-                    className="text-sm font-bold tracking-tight"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                  >
-                    {column.label}
-                  </h3>
-                  <span
-                    className={
-                      column.status === "pending" && columnOrders.length > 0
-                        ? "rounded bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-900"
-                        : "rounded bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
-                    }
-                  >
-                    {columnOrders.length}
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {columnOrders.map((order) => (
-                    <OrderCard
-                      key={order.id}
-                      order={order}
-                      restaurantId={restaurantId}
-                      currency={currency}
-                      onUpdated={refresh}
-                    />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {activeOrders
+            .slice()
+            .sort((a, b) => {
+              if (a.status !== b.status) return a.status === "pending" ? -1 : 1;
+              return (
+                new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+              );
+            })
+            .map((order) => (
+              <OrderCard
+                key={order.id}
+                order={order}
+                restaurantId={restaurantId}
+                currency={currency}
+                onUpdated={refresh}
+              />
+            ))}
         </div>
       )}
     </div>

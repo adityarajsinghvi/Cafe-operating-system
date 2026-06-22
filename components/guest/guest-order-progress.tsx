@@ -1,14 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Bell,
-  Check,
-  ChefHat,
-  PartyPopper,
-  Send,
-  Sparkles,
-} from "lucide-react";
+import { Check, ChefHat, PartyPopper, Send, Sparkles } from "lucide-react";
 
 import { springGentle, springSnappy } from "@/lib/motion/presets";
 import { resolveGuestBrandColor } from "@/lib/guest/brand-color";
@@ -16,7 +9,7 @@ import type { OrderStatus } from "@/types/order";
 import { GUEST_ORDER_STATUS, ORDER_STATUS_FLOW } from "@/types/order";
 import { cn } from "@/lib/utils";
 
-const STEP_ICONS = [Send, Check, ChefHat, Bell, PartyPopper];
+const STEP_ICONS = [Send, ChefHat, PartyPopper];
 
 export function GuestOrderProgress({
   status,
@@ -151,7 +144,7 @@ export function GuestOrderStatusHero({
 }) {
   const brandColor = resolveGuestBrandColor(primaryColor);
   const meta = GUEST_ORDER_STATUS[status];
-  const isReady = status === "ready";
+  const isConfirmed = status === "confirmed";
   const isServed = status === "served";
 
   return (
@@ -159,14 +152,14 @@ export function GuestOrderStatusHero({
       layout
       className={cn(
         "relative overflow-hidden rounded-2xl p-4",
-        isReady && "ring-1 ring-amber-400/40",
+        isConfirmed && "ring-1 ring-amber-400/40",
         isServed && "ring-1 ring-green-400/30",
       )}
       style={{
         background: `linear-gradient(135deg, color-mix(in oklch, ${brandColor} 12%, var(--card)) 0%, var(--card) 100%)`,
       }}
     >
-      {isReady && (
+      {isConfirmed && (
         <motion.div
           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-amber-400/10 via-transparent to-amber-400/10"
           animate={{ x: ["-100%", "100%"] }}

@@ -702,8 +702,6 @@ interface GuestOrder {
 const STATUS_CFG: Record<string, { label: string; dot: string; bg: string; color: string }> = {
   pending:   { label: "Pending",   dot: "#f59e0b", bg: "#fffbeb", color: "#92400e" },
   confirmed: { label: "Confirmed", dot: "#3b82f6", bg: "#eff6ff", color: "#1e40af" },
-  preparing: { label: "Preparing", dot: "#f97316", bg: "#fff7ed", color: "#9a3412" },
-  ready:     { label: "Ready!",    dot: "#22c55e", bg: "#f0fdf4", color: "#166534" },
   served:    { label: "Served",    dot: "#9ca3af", bg: "#f9fafb", color: "#6b7280" },
   cancelled: { label: "Cancelled", dot: "#ef4444", bg: "#fef2f2", color: "#991b1b" },
 };

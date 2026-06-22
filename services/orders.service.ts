@@ -483,12 +483,7 @@ export async function getActiveOrderCounts(restaurantId: string) {
   const ctx = await requireRestaurantAccess(restaurantId);
   if (!ctx) return null;
 
-  const activeStatuses: OrderStatus[] = [
-    "pending",
-    "confirmed",
-    "preparing",
-    "ready",
-  ];
+  const activeStatuses: OrderStatus[] = ["pending", "confirmed"];
 
   const { count } = await ctx.admin
     .from("orders")
