@@ -198,7 +198,6 @@ export async function updateSettingsAction(
 ): Promise<EditorActionState> {
   const name = formData.get("name")?.toString();
   const description = formData.get("description")?.toString();
-  const primaryColor = formData.get("primaryColor")?.toString();
   const city = formData.get("city")?.toString();
   const smartSuggestionsEnabled = formData.get("smartSuggestionsEnabled") === "on";
   const orderingEnabled = formData.get("orderingEnabled") === "on";
@@ -207,7 +206,6 @@ export async function updateSettingsAction(
   const result = await updateRestaurantSettings(restaurantId, {
     name: name ?? undefined,
     description: description ?? undefined,
-    primaryColor: primaryColor ?? undefined,
     city: city ?? undefined,
     smartSuggestionsEnabled,
     orderingEnabled,

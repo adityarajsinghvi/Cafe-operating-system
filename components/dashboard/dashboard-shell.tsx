@@ -63,8 +63,7 @@ export function DashboardShell({
       </header>
 
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 border-r border-border p-6 md:flex md:flex-col"
-        style={{ background: "hsl(var(--card))" }}>
+      <aside className="hidden w-64 shrink-0 border-r border-border bg-card p-6 md:flex md:flex-col">
         <DashboardNav
           restaurantId={restaurantId}
           restaurantName={restaurantName}

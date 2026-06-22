@@ -71,7 +71,7 @@ function ServiceRequestCard({
       className="min-w-[200px] max-w-[220px] shrink-0 overflow-hidden rounded-2xl border shadow-sm"
       style={{
         borderColor: isAcknowledged ? C.border : `${C.terracotta}50`,
-        background: isAcknowledged ? "hsl(var(--card))" : `${C.terracotta}08`,
+        background: isAcknowledged ? "var(--card)" : `${C.terracotta}08`,
       }}
     >
       {/* Chit mini-header */}
@@ -109,12 +109,12 @@ function ServiceRequestCard({
         <div className="flex items-center gap-2 mb-2.5">
           <div
             className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-            style={{ background: isAcknowledged ? "hsl(var(--muted))" : `${C.terracotta}15` }}
+            style={{ background: isAcknowledged ? "var(--muted)" : `${C.terracotta}15` }}
           >
             <Icon className="h-3.5 w-3.5" style={{ color: isAcknowledged ? C.inkMuted : C.terracotta }} />
           </div>
           <div>
-            <p className="text-[12px] font-bold" style={{ color: "hsl(var(--foreground))", fontFamily: SERIF }}>
+            <p className="text-[12px] font-bold" style={{ color: "var(--foreground)", fontFamily: SERIF }}>
               {SERVICE_REQUEST_LABELS[request.requestType]}
             </p>
             <p className="text-[10px]" style={{ color: C.inkMuted }}>{timeAgo(request.createdAt)}</p>
@@ -138,7 +138,7 @@ function ServiceRequestCard({
               type="button"
               disabled
               className="flex-1 rounded-xl py-1.5 text-[11px] font-bold"
-              style={{ background: "hsl(var(--muted))", color: C.inkMuted }}
+              style={{ background: "var(--muted)", color: C.inkMuted }}
             >
               Acknowledged
             </button>
@@ -148,7 +148,7 @@ function ServiceRequestCard({
             disabled={isPending}
             onClick={() => updateStatus("resolved")}
             className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 text-[11px] font-black text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-            style={{ background: isAcknowledged ? C.terracotta : "hsl(var(--muted))", color: isAcknowledged ? C.paper : C.inkMuted }}
+            style={{ background: isAcknowledged ? C.terracotta : "var(--muted)", color: isAcknowledged ? C.paper : C.inkMuted }}
           >
             <Check className="h-3 w-3" />
             Done
@@ -236,7 +236,7 @@ export function ServiceRequestPanel({
       {/* Torn paper edge */}
       <svg viewBox="0 0 600 10" preserveAspectRatio="none" className="block w-full" style={{ height: 10, marginTop: -1 }}>
         <path d="M0,0 L0,10 L12,3 L24,8 L36,2 L48,8 L60,2 L72,8 L84,3 L96,8 L108,2 L120,8 L132,3 L144,8 L156,2 L168,8 L180,3 L192,8 L204,2 L216,8 L228,3 L240,8 L252,2 L264,8 L276,3 L288,8 L300,2 L312,8 L324,3 L336,8 L348,2 L360,8 L372,3 L384,8 L396,2 L408,8 L420,3 L432,8 L444,2 L456,8 L468,3 L480,8 L492,2 L504,8 L516,3 L528,8 L540,2 L552,8 L564,3 L576,8 L588,2 L600,7 L600,0 Z" style={{ fill: C.espresso }} />
-        <path d="M0,10 L12,3 L24,8 L36,2 L48,8 L60,2 L72,8 L84,3 L96,8 L108,2 L120,8 L132,3 L144,8 L156,2 L168,8 L180,3 L192,8 L204,2 L216,8 L228,3 L240,8 L252,2 L264,8 L276,3 L288,8 L300,2 L312,8 L324,3 L336,8 L348,2 L360,8 L372,3 L384,8 L396,2 L408,8 L420,3 L432,8 L444,2 L456,8 L468,3 L480,8 L492,2 L504,8 L516,3 L528,8 L540,2 L552,8 L564,3 L576,8 L588,2 L600,7 L600,10 Z" fill="hsl(var(--card))" />
+        <path d="M0,10 L12,3 L24,8 L36,2 L48,8 L60,2 L72,8 L84,3 L96,8 L108,2 L120,8 L132,3 L144,8 L156,2 L168,8 L180,3 L192,8 L204,2 L216,8 L228,3 L240,8 L252,2 L264,8 L276,3 L288,8 L300,2 L312,8 L324,3 L336,8 L348,2 L360,8 L372,3 L384,8 L396,2 L408,8 L420,3 L432,8 L444,2 L456,8 L468,3 L480,8 L492,2 L504,8 L516,3 L528,8 L540,2 L552,8 L564,3 L576,8 L588,2 L600,7 L600,10 Z" fill="var(--card)" />
       </svg>
 
       {/* Scrollable cards */}

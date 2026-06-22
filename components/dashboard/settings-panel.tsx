@@ -45,7 +45,6 @@ export function SettingsPanel({
   restaurantName,
   name,
   description,
-  primaryColor,
   logoUrl,
   city,
   smartSuggestionsEnabled,
@@ -58,7 +57,6 @@ export function SettingsPanel({
   restaurantName: string;
   name: string;
   description: string | null;
-  primaryColor: string;
   logoUrl: string | null;
   city: string;
   smartSuggestionsEnabled: boolean;
@@ -252,26 +250,6 @@ export function SettingsPanel({
                 rows={3}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="primaryColor">Brand color</Label>
-              <div className="flex items-center gap-3">
-                <Input
-                  id="primaryColor"
-                  name="primaryColor"
-                  type="color"
-                  defaultValue={primaryColor}
-                  className="h-11 w-16 cursor-pointer p-1"
-                />
-                <span className="font-mono text-sm text-muted-foreground">
-                  {primaryColor}
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Tints accents like the order progress bar on the guest menu. Very dark
-                shades are ignored in favor of the default accent for readability.
-              </p>
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="city">City (for smart suggestions)</Label>
               <Input
