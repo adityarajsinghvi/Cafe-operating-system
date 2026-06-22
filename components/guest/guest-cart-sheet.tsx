@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, CheckCircle2, Droplets, Loader2, Minus, Plus, Receipt, Trash2 } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
+import React, { useRef, useState, useTransition } from "react";
 
 import { GuestIdentityDialog, useIdentityDialog } from "@/components/guest/guest-identity-dialog";
 import { useGuestCart } from "@/components/guest/guest-cart-provider";
@@ -243,15 +243,22 @@ export function GuestCartSheet({ currency }: { currency: string }) {
         <SheetContent
           side="bottom"
           hideClose
-          className="max-h-[94dvh] overflow-hidden border-0 p-0"
+          className="overflow-hidden border-0 p-0"
+          style={{
+            maxHeight: "92dvh",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
         >
           {/* Outer wrapper — relative for overlay positioning */}
-          <div className="relative max-h-[calc(94dvh-1rem)] overflow-hidden rounded-t-3xl shadow-2xl">
+          <div
+            className="relative overflow-hidden rounded-t-3xl shadow-2xl"
+            style={{ maxHeight: "92dvh", display: "flex", flexDirection: "column" }}
+          >
 
             {/* ── The animated chit ── */}
             <motion.div
               ref={chitRef}
-              className="flex flex-col"
+              className="flex min-h-0 flex-1 flex-col"
               style={{ background: "var(--guest-surface)", willChange: "transform" }}
               variants={chitVariants}
               animate={phase}
@@ -303,10 +310,10 @@ export function GuestCartSheet({ currency }: { currency: string }) {
               {/* Tear line overlay — draws across during "tearing" phase */}
               <TearLine visible={phase === "tearing" || phase === "flying"} />
 
-              {/* Scrollable paper body */}
+              {/* Scrollable paper body — flex-1 so footer CTA is always visible */}
               <div
-                className="parcha-ruled flex-1 overflow-y-auto px-5 pb-2"
-                style={{ backgroundPosition: "0 0", maxHeight: "50dvh" }}
+                className="parcha-ruled min-h-0 flex-1 overflow-y-auto px-5 pb-2"
+                style={{ backgroundPosition: "0 0", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
               >
                 {lines.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-14 text-center">
@@ -347,7 +354,8 @@ export function GuestCartSheet({ currency }: { currency: string }) {
                                 value={line.notes ?? ""}
                                 onChange={(e) => updateLineNotes(line.menuItemId, e.target.value)}
                                 placeholder="e.g. less spicy, extra sauce"
-                                className="mt-2 w-full rounded-lg border border-[var(--guest-border)] bg-[var(--guest-surface)] px-3 py-1.5 text-xs text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 focus:border-[var(--guest-accent)] transition-colors"
+                                style={{ fontSize: "16px" }}
+                                className="mt-2 w-full rounded-lg border border-[var(--guest-border)] bg-[var(--guest-surface)] px-3 py-1.5 text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 focus:border-[var(--guest-accent)] transition-colors"
                               />
                             </div>
 
@@ -435,11 +443,14 @@ export function GuestCartSheet({ currency }: { currency: string }) {
                 )}
               </div>
 
-              {/* Footer CTA */}
+              {/* Footer CTA — shrink-0 so it never gets squeezed off screen */}
               {lines.length > 0 && (
                 <div
-                  className="shrink-0 space-y-3 border-t border-dashed border-[var(--guest-border)] px-5 pb-6 pt-4"
-                  style={{ background: "var(--guest-surface)" }}
+                  className="shrink-0 space-y-3 border-t border-dashed border-[var(--guest-border)] px-5 pt-4"
+                  style={{
+                    background: "var(--guest-surface)",
+                    paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))",
+                  }}
                 >
                   <Textarea
                     value={notes}

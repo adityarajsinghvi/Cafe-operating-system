@@ -77,7 +77,7 @@ export function GuestBottomNav({ slug }: { slug: string }) {
   }
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+    <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:px-4">
       <div className="mx-auto max-w-lg space-y-2">
         {showServiceBar && (
           <div className="rounded-[1.35rem] border border-border/60 bg-[var(--guest-elevated,theme(colors.card/0.94))] p-1.5 shadow-lg backdrop-blur-xl">

@@ -185,6 +185,23 @@
   .guest-app {
     background: #faf9f5;
     min-height: 100dvh;
+    /* Prevent 300ms tap delay on all interactive elements */
+    touch-action: manipulation;
+  }
+
+  /* Safari auto-zoom prevention: any input < 16px gets bumped up */
+  .guest-app input,
+  .guest-app textarea,
+  .guest-app select {
+    font-size: 16px !important;
+    /* Visually scale back down so it still looks correct */
+    transform-origin: left top;
+  }
+
+  /* Smooth momentum scrolling on iOS for all scroll containers */
+  .guest-app [style*="overflow"],
+  .guest-app [class*="overflow"] {
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Portaled dialogs/sheets on guest routes inherit the warm palette */

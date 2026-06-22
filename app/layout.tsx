@@ -34,10 +34,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover",
+  maximumScale: 1,        // prevent Safari auto-zoom on input focus
+  userScalable: false,    // prevent pinch-zoom causing "zoomed in" feeling
+  viewportFit: "cover",  // respect notch / home indicator safe areas
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#09090b" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+    { media: "(prefers-color-scheme: light)", color: "#3d3929" },
+    { media: "(prefers-color-scheme: dark)", color: "#3d3929" },
   ],
 };
 

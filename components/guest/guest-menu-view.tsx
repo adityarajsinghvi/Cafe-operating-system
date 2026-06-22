@@ -594,7 +594,8 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search menu…"
-              className="w-full rounded-xl border border-[var(--guest-border)] bg-[var(--guest-surface)] py-2.5 pl-10 pr-9 text-sm text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 transition-all focus:border-[var(--guest-accent)] focus:ring-2 focus:ring-[var(--guest-accent)]/10"
+              style={{ fontSize: "16px" }}
+              className="w-full rounded-xl border border-[var(--guest-border)] bg-[var(--guest-surface)] py-2.5 pl-10 pr-9 text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 transition-all focus:border-[var(--guest-accent)] focus:ring-2 focus:ring-[var(--guest-accent)]/10"
             />
             {query && (
               <button type="button" onClick={() => setQuery("")}
