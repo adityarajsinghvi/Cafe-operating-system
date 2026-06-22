@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { ParchaWordmark } from "@/components/shared/parcha-logo";
 
 export default function MarketingLayout({
   children,
@@ -11,24 +10,40 @@ export default function MarketingLayout({
 }) {
   return (
     <div className="flex min-h-[100dvh] flex-col">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6 sm:py-6">
-          <Link href="/" className="shrink-0 text-lg font-semibold tracking-tight">
-            Parcha
+      <header
+        className="sticky top-0 z-50 flex items-center justify-between px-6 py-3 lg:px-16"
+        style={{
+          background: "rgba(61,57,41,0.88)",
+          backdropFilter: "blur(14px)",
+          borderBottom: "1px solid rgba(250,249,245,0.08)",
+        }}
+      >
+        <Link href="/" className="flex flex-col leading-none">
+          <ParchaWordmark variant="light" height={26} />
+          <span
+            className="mt-0.5 text-[10px] italic"
+            style={{ color: "rgba(250,249,245,0.45)", fontFamily: "Georgia, serif" }}
+          >
+            The memory your cafe was missing
+          </span>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href="/login"
+            className="text-sm font-semibold transition-opacity hover:opacity-70"
+            style={{ color: "rgba(250,249,245,0.7)" }}
+          >
+            Sign in
           </Link>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <ThemeToggle />
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign in</Link>
-            </Button>
-            <Button size="sm" className="sm:h-11 sm:px-5" asChild>
-              <Link href="/signup">
-                <span className="sm:hidden">Start</span>
-                <span className="hidden sm:inline">Get started</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
+          <Link
+            href="/signup"
+            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold text-white transition-all hover:-translate-y-px"
+            style={{ background: "#c96442", boxShadow: "0 4px 16px rgba(201,100,66,0.4)" }}
+          >
+            Get started
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
         </div>
       </header>
       <main className="flex-1">{children}</main>
