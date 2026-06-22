@@ -22,7 +22,7 @@ export function DashboardShell({
   return (
     <div className="flex min-h-[100dvh] flex-col md:flex-row">
       {/* Mobile header */}
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}>
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

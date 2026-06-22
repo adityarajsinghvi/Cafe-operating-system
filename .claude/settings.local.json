@@ -29,7 +29,10 @@
       "WebSearch",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(gh repo *)",
+      "PowerShell(where.exe git; where.exe gh; Get-Command gh -ErrorAction SilentlyContinue; [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) -split \";\" | Select-String -Pattern \"gh|github\")",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"C:\\\\Users\\\\Aditya\\\\AppData\\\\Local\\\\Programs\" -ErrorAction SilentlyContinue | Select-Object Name)"
     ]
   }
 }

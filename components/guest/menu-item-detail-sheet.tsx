@@ -39,7 +39,8 @@ export function MenuItemDetailSheet({
       <SheetContent
         side="bottom"
         hideClose
-        className="max-h-[88dvh] overflow-hidden border-0 p-0"
+        className="overflow-hidden border-0 p-0"
+        style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <AnimatePresence mode="wait">
           {item && (
@@ -49,11 +50,12 @@ export function MenuItemDetailSheet({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 24 }}
               transition={springGentle}
-              className="flex max-h-[calc(88dvh-1rem)] flex-col"
+              className="flex flex-col"
+              style={{ maxHeight: "92dvh" }}
             >
               <SheetTitle className="sr-only">{item.name}</SheetTitle>
 
-              <div className="relative h-52 shrink-0 bg-muted sm:h-56">
+              <div className="relative shrink-0 bg-muted" style={{ height: "clamp(140px, 30dvh, 220px)" }}>
                 {item.imageUrl ? (
                   <Image
                     src={item.imageUrl}
@@ -79,7 +81,7 @@ export function MenuItemDetailSheet({
                 </button>
               </div>
 
-              <div className="flex flex-1 flex-col overflow-y-auto px-5 pb-8 pt-4">
+              <div className="flex flex-1 flex-col overflow-y-auto px-5 pt-4" style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}>
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="text-2xl font-semibold tracking-tight">
                     {item.name}
@@ -115,7 +117,7 @@ export function MenuItemDetailSheet({
                   whileTap={{ scale: 0.98 }}
                   transition={springGentle}
                   onClick={handleAdd}
-                  className="mt-8 rounded-2xl bg-[var(--guest-accent)] px-4 py-4 text-sm font-semibold text-[var(--guest-accent-foreground)]"
+                  className="mt-8 w-full rounded-2xl bg-[var(--guest-accent)] px-4 py-4 text-base font-semibold text-[var(--guest-accent-foreground)]"
                 >
                   Add to order
                 </motion.button>

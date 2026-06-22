@@ -181,7 +181,7 @@ export function OrderCard({
               type="button"
               disabled={isUpdating}
               onClick={() => advanceStatus("served")}
-              className="rounded-lg border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
+              className="rounded-lg border border-border px-3 py-2 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
             >
               Mark served
             </button>
@@ -191,7 +191,7 @@ export function OrderCard({
               type="button"
               disabled={isUpdating}
               onClick={() => advanceStatus()}
-              className="rounded-lg px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="rounded-lg px-3.5 py-2 text-[11px] font-bold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
               style={{ background: "#c96442" }}
             >
               {NEXT_LABEL[order.status] ?? `Mark ${ORDER_STATUS_LABELS[nextStatus].toLowerCase()} →`}

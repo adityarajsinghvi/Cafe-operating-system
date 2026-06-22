@@ -102,20 +102,20 @@ export function SmartSuggestionBanner({ onSuggestItem }: Props) {
             </p>
 
             {/* CTA */}
-            <div className="mt-2.5 flex items-center gap-2">
+            <div className="mt-2.5 flex flex-wrap items-center gap-2">
               <button
                 onClick={() => {
                   onSuggestItem?.(suggestion.itemName);
                   setDismissed(true);
                 }}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all active:scale-95"
+                className="flex min-w-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all active:scale-95"
                 style={{
                   background: "oklch(0.38 0.12 48)",
                   color: "oklch(0.97 0.03 50)",
                 }}
               >
-                <Sparkles className="h-3 w-3" />
-                Try {suggestion.itemName}
+                <Sparkles className="h-3 w-3 shrink-0" />
+                <span className="truncate max-w-[160px]">Try {suggestion.itemName}</span>
               </button>
 
               {suggestion.isPersonalized && (

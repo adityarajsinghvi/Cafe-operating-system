@@ -205,7 +205,7 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
   const pointsNeeded = loyalty ? Math.max(0, loyalty.redemptionThreshold - loyalty.points) : 0;
 
   return (
-    <div className="parcha-ruled px-4 pb-28 pt-4 sm:px-6" style={{ backgroundPosition: "0 0" }}>
+    <div className="parcha-ruled px-4 pt-4 sm:px-6" style={{ backgroundPosition: "0 0", paddingBottom: "7rem" }}>
       {/* Welcome banner */}
       <AnimatePresence>
         {customerName && !welcomeDismissed && (
@@ -329,7 +329,8 @@ function DiscoverTab({ menu }: { menu: GuestMenu }) {
                 onKeyDown={(e) => e.key === "Enter" && handleReturnLookup()}
                 placeholder="Mobile number"
                 inputMode="numeric"
-                className="w-full rounded-lg border border-[var(--guest-border)] bg-[var(--guest-bg)] px-3 py-2.5 text-sm text-[var(--guest-ink)] outline-none transition-colors focus:border-[var(--guest-accent)]"
+                style={{ fontSize: "16px" }}
+                className="w-full rounded-lg border border-[var(--guest-border)] bg-[var(--guest-bg)] px-3 py-2.5 text-[var(--guest-ink)] outline-none transition-colors focus:border-[var(--guest-accent)]"
               />
               <button type="button" onClick={handleReturnLookup} disabled={isLookingUp}
                 className="shrink-0 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
@@ -585,7 +586,7 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
       </div>
 
       {/* Sticky search + filters */}
-      <div className="sticky top-[60px] z-20 pb-1" style={{ background: "rgba(250,249,245,0.95)", backdropFilter: "blur(10px)" }}>
+      <div className="sticky top-[52px] z-20 pb-1 sm:top-[60px]" style={{ background: "rgba(250,249,245,0.95)", backdropFilter: "blur(10px)" }}>
         <div className="px-4 pt-2.5 pb-2 sm:px-6">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--guest-ink-muted)]" />

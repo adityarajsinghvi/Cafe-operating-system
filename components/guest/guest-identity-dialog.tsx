@@ -75,7 +75,8 @@ export function GuestIdentityDialog({ open, onClose, onConfirm }: Props) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.97 }}
             transition={springGentle}
-            className="fixed inset-x-4 bottom-6 z-50 mx-auto max-w-sm overflow-hidden rounded-3xl bg-[var(--guest-surface)] shadow-2xl shadow-black/20 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2"
+            className="fixed inset-x-4 z-50 mx-auto max-w-sm overflow-hidden rounded-3xl bg-[var(--guest-surface)] shadow-2xl shadow-black/20 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2"
+            style={{ bottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
             role="dialog"
             aria-modal="true"
             aria-label="Enter your details"
@@ -137,7 +138,8 @@ export function GuestIdentityDialog({ open, onClose, onConfirm }: Props) {
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   placeholder="e.g. Priya"
                   autoComplete="given-name"
-                  className="w-full rounded-2xl border border-[var(--guest-border)] bg-[var(--guest-bg)] px-4 py-3 text-sm text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 transition-all focus:border-[var(--guest-accent)] focus:ring-2 focus:ring-[var(--guest-accent)]/15"
+                  style={{ fontSize: "16px" }}
+                  className="w-full rounded-2xl border border-[var(--guest-border)] bg-[var(--guest-bg)] px-4 py-3 text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 transition-all focus:border-[var(--guest-accent)] focus:ring-2 focus:ring-[var(--guest-accent)]/15"
                 />
               </div>
 
@@ -163,7 +165,8 @@ export function GuestIdentityDialog({ open, onClose, onConfirm }: Props) {
                     placeholder="98765 43210"
                     inputMode="numeric"
                     autoComplete="tel-national"
-                    className="w-full rounded-2xl border border-[var(--guest-border)] bg-[var(--guest-bg)] px-4 py-3 text-sm text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 transition-all focus:border-[var(--guest-accent)] focus:ring-2 focus:ring-[var(--guest-accent)]/15"
+                    style={{ fontSize: "16px" }}
+                    className="w-full rounded-2xl border border-[var(--guest-border)] bg-[var(--guest-bg)] px-4 py-3 text-[var(--guest-ink)] outline-none placeholder:text-[var(--guest-ink-muted)]/50 transition-all focus:border-[var(--guest-accent)] focus:ring-2 focus:ring-[var(--guest-accent)]/15"
                   />
                 </div>
               </div>

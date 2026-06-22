@@ -445,7 +445,7 @@ export function RewardsPanel({ restaurantId }: { restaurantId: string }) {
                           : "border-border bg-card"
                       }`}
                     >
-                      <div className="flex items-center gap-3 px-4 py-3">
+                      <div className="flex flex-wrap items-center gap-3 px-4 py-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-sm font-bold text-emerald-600 dark:text-emerald-400">
                           {(c.name ?? c.phone).charAt(0).toUpperCase()}
                         </div>
@@ -454,10 +454,10 @@ export function RewardsPanel({ restaurantId }: { restaurantId: string }) {
                             {c.name ?? <span className="italic text-muted-foreground">Anonymous</span>}
                           </p>
                           <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Phone className="h-3 w-3" /> +91 {c.phone}
+                            <Phone className="h-3 w-3" />+91 {c.phone}
                           </p>
                         </div>
-                        <div className="flex shrink-0 items-center gap-3">
+                        <div className="flex shrink-0 items-center gap-2 ml-auto">
                           <div className="text-right">
                             <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">⭐ {c.points} pts</p>
                             <p className="text-xs text-muted-foreground">{c.visits} visit{c.visits !== 1 ? "s" : ""}</p>
