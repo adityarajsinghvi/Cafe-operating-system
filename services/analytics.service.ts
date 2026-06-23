@@ -140,17 +140,14 @@ export async function getAnalyticsOverview(
     }
   }
 
-  // ── Menu item performance (best/worst sellers) ──
+  // ── Menu item performance (best/worst sellers) + item-by-time breakdowns ──
   const orderIds = curBillable.map((o) => o.id);
-  const { topItems, bottomItems } = await getMenuItemPerformanceInternal(
-    ctx.admin,
-    restaurantId,
-    orderIds,
-    revenueCents,
-  );
-
-  // ── Customer segments + at-risk regulars ──
-  const customerSegments = await getCustomerSegmentsInternal(ctx.admin, restaurantId, since);
+  const orderCreatedAt = new Map(curBillable.map((o) => [o.id, o.created_at]));
+  const [{ topItems, bottomItems }, { itemsByHour, itemsByDay }, customerSegments] = await Promise.all([
+    getMenuItemPerformanceInternal(ctx.admin, restaurantId, orderIds, revenueCents),
+    getItemTimeBreakdownsInternal(ctx.admin, restaurantId, orderIds, orderCreatedAt),
+    getCustomerSegmentsInternal(ctx.admin, restaurantId, since),
+  ]);
 
   // ── Table turnover ──
   const sessionsByTable = new Map<string, { count: number; totalMinutes: number; withDuration: number }>();
@@ -199,6 +196,8 @@ export async function getAnalyticsOverview(
     peakHours,
     topItems,
     bottomItems,
+    itemsByHour,
+    itemsByDay,
     customerSegments,
     tableTurnover,
     currency,
@@ -274,6 +273,76 @@ async function getMenuItemPerformanceInternal(
     .reverse();
 
   return { topItems, bottomItems };
+}
+
+async function getItemTimeBreakdownsInternal(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  admin: any,
+  restaurantId: string,
+  orderIds: string[],
+  orderCreatedAt: Map<string, string>,
+): Promise<{ itemsByHour: Array<{ label: string; topItem: string; count: number }>; itemsByDay: Array<{ label: string; topItem: string; count: number }> }> {
+  if (orderIds.length === 0) return { itemsByHour: [], itemsByDay: [] };
+
+  const [{ data: orderItems }, { data: menuItems }] = await Promise.all([
+    admin.from("order_items").select("order_id, menu_item_id, quantity").in("order_id", orderIds),
+    admin.from("menu_items").select("id, name").eq("restaurant_id", restaurantId),
+  ]);
+
+  const nameMap = new Map<string, string>(
+    ((menuItems ?? []) as Array<{ id: string; name: string }>).map((m) => [m.id, m.name]),
+  );
+
+  const hourItemCount = new Map<number, Map<string, number>>();
+  const dowItemCount = new Map<number, Map<string, number>>();
+
+  for (const oi of (orderItems ?? []) as Array<{ order_id: string; menu_item_id: string | null; quantity: number }>) {
+    if (!oi.menu_item_id) continue;
+    const createdAt = orderCreatedAt.get(oi.order_id);
+    if (!createdAt) continue;
+    const d = new Date(createdAt);
+    const hour = d.getHours();
+    const dow = d.getDay();
+    const name = nameMap.get(oi.menu_item_id) ?? "Unknown";
+
+    const hMap = hourItemCount.get(hour) ?? new Map<string, number>();
+    hMap.set(name, (hMap.get(name) ?? 0) + oi.quantity);
+    hourItemCount.set(hour, hMap);
+
+    const dMap = dowItemCount.get(dow) ?? new Map<string, number>();
+    dMap.set(name, (dMap.get(name) ?? 0) + oi.quantity);
+    dowItemCount.set(dow, dMap);
+  }
+
+  function topFromMap(map: Map<string, number>): [string, number] | null {
+    if (map.size === 0) return null;
+    return [...map.entries()].sort((a, b) => b[1] - a[1])[0];
+  }
+
+  const timeSlots = [
+    { label: "Night (12–5 AM)", hours: [0, 1, 2, 3, 4, 5] },
+    { label: "Morning (6–11 AM)", hours: [6, 7, 8, 9, 10, 11] },
+    { label: "Afternoon (12–5 PM)", hours: [12, 13, 14, 15, 16, 17] },
+    { label: "Evening (6–11 PM)", hours: [18, 19, 20, 21, 22, 23] },
+  ];
+
+  const itemsByHour = timeSlots.flatMap(({ label, hours }) => {
+    const combined = new Map<string, number>();
+    for (const h of hours) {
+      const hMap = hourItemCount.get(h);
+      if (hMap) for (const [name, count] of hMap) combined.set(name, (combined.get(name) ?? 0) + count);
+    }
+    const top = topFromMap(combined);
+    return top ? [{ label, topItem: top[0], count: top[1] }] : [];
+  });
+
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const itemsByDay = dayNames.flatMap((label, dow) => {
+    const top = topFromMap(dowItemCount.get(dow) ?? new Map());
+    return top ? [{ label, topItem: top[0], count: top[1] }] : [];
+  });
+
+  return { itemsByHour, itemsByDay };
 }
 
 async function getCustomerSegmentsInternal(

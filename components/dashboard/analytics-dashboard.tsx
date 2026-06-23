@@ -31,6 +31,7 @@ import {
 import type {
   AnalyticsOverview,
   AnalyticsRange,
+  ItemTimeSlot,
   MenuInsightsState,
 } from "@/types/analytics";
 import { ANALYTICS_RANGE_LABELS } from "@/types/analytics";
@@ -169,6 +170,30 @@ function MenuItemRow({
       <p className={`shrink-0 text-sm font-semibold ${tone === "top" ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>
         {formatMoney(revenueCents, currency)}
       </p>
+    </div>
+  );
+}
+
+function ItemTimeTable({ rows, emptyText }: { rows: ItemTimeSlot[]; emptyText: string }) {
+  if (rows.length === 0) return <p className="text-sm text-muted-foreground">{emptyText}</p>;
+  const maxCount = Math.max(1, ...rows.map((r) => r.count));
+  return (
+    <div className="space-y-2.5">
+      {rows.map((row) => (
+        <div key={row.label} className="space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground shrink-0">{row.label}</span>
+            <span className="truncate text-right text-sm font-semibold">{row.topItem}</span>
+          </div>
+          <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full"
+              style={{ width: `${(row.count / maxCount) * 100}%`, background: "#c96442" }}
+            />
+          </div>
+          <p className="text-right text-[10px] text-muted-foreground">{row.count} sold</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -405,6 +430,16 @@ export function AnalyticsDashboard({ restaurantId }: { restaurantId: string }) {
                   ))}
                 </div>
               )}
+            </SectionCard>
+          </div>
+
+          {/* What sells when */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <SectionCard title="Top item by time of day" sub="Most ordered item in each part of the day">
+              <ItemTimeTable rows={data.itemsByHour} emptyText="Not enough data yet." />
+            </SectionCard>
+            <SectionCard title="Top item by day of week" sub="Most ordered item each day">
+              <ItemTimeTable rows={data.itemsByDay} emptyText="Not enough data yet." />
             </SectionCard>
           </div>
 

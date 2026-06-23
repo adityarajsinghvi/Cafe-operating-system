@@ -65,6 +65,12 @@ export interface TableTurnover {
   avgSessionMinutes: number | null;
 }
 
+export interface ItemTimeSlot {
+  label: string;
+  topItem: string;
+  count: number;
+}
+
 export interface AnalyticsOverview {
   range: AnalyticsRange;
   kpis: AnalyticsKpis;
@@ -72,6 +78,8 @@ export interface AnalyticsOverview {
   peakHours: PeakHourCell[];
   topItems: MenuItemPerformance[];
   bottomItems: MenuItemPerformance[];
+  itemsByHour: ItemTimeSlot[];
+  itemsByDay: ItemTimeSlot[];
   customerSegments: CustomerSegments;
   tableTurnover: TableTurnover[];
   currency: string;
