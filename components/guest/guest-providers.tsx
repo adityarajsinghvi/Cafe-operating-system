@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { GuestCartProvider } from "@/components/guest/guest-cart-provider";
 import { GuestCartSheet } from "@/components/guest/guest-cart-sheet";
 import { GuestLightTheme } from "@/components/guest/guest-light-theme";
+import { GuestOrderTracker } from "@/components/guest/guest-order-tracker";
 import {
   GuestPendingOrderBar,
   GuestTableUrlSync,
@@ -52,6 +53,7 @@ export function GuestProviders({
           {children}
           <GuestPendingOrderBar currency={currency} />
           <GuestCartSheet currency={currency} />
+          <GuestOrderTracker currency={currency} primaryColor={primaryColor} />
         </GuestShell>
       </GuestCartProvider>
     </GuestLightTheme>
