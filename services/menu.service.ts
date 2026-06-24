@@ -432,6 +432,37 @@ export async function getPublishedMenuStats(restaurantId: string) {
   };
 }
 
+export async function getMenuCategoryOverview(
+  restaurantId: string,
+): Promise<Array<{ id: string; name: string; itemCount: number }>> {
+  const ctx = await requireRestaurantAccess(restaurantId);
+  if (!ctx) return [];
+
+  const { data: categories } = await ctx.admin
+    .from("menu_categories")
+    .select("id, name")
+    .eq("restaurant_id", restaurantId)
+    .order("sort_order");
+
+  if (!categories?.length) return [];
+
+  const { data: items } = await ctx.admin
+    .from("menu_items")
+    .select("category_id")
+    .in("category_id", categories.map((c) => c.id));
+
+  const counts = new Map<string, number>();
+  for (const item of items ?? []) {
+    counts.set(item.category_id, (counts.get(item.category_id) ?? 0) + 1);
+  }
+
+  return categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    itemCount: counts.get(c.id) ?? 0,
+  }));
+}
+
 export async function getPublishedMenuForEdit(restaurantId: string) {
   const ctx = await requireRestaurantAccess(restaurantId);
   if (!ctx) return null;

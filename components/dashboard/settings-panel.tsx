@@ -50,6 +50,7 @@ export function SettingsPanel({
   smartSuggestionsEnabled,
   rewardsEnabled,
   orderingEnabled,
+  plan,
   tables,
 }: {
   restaurantId: string;
@@ -62,8 +63,10 @@ export function SettingsPanel({
   smartSuggestionsEnabled: boolean;
   rewardsEnabled: boolean;
   orderingEnabled: boolean;
+  plan: string;
   tables: RestaurantTable[];
 }) {
+  const isMenuPlan = plan === "menu";
   const [settingsMessage, setSettingsMessage] = useState<string | null>(null);
   const [tableMessage, setTableMessage] = useState<string | null>(null);
   const [isSavingSettings, startSaveSettings] = useTransition();
@@ -250,39 +253,41 @@ export function SettingsPanel({
                 rows={3}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="city">City (for smart suggestions)</Label>
-              <Input
-                id="city"
-                name="city"
-                defaultValue={city}
-                placeholder="e.g. Bangalore, Mumbai, Delhi"
-              />
-              <p className="text-xs text-muted-foreground">
-                Used to fetch live weather for contextual menu suggestions on the guest app.
-              </p>
-            </div>
-
-            {/* Smart suggestions hidden — coming soon */}
-
-            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
-              <input
-                type="checkbox"
-                id="orderingEnabled"
-                name="orderingEnabled"
-                defaultChecked={orderingEnabled}
-                className="mt-0.5 h-4 w-4 cursor-pointer accent-primary"
-              />
-              <div>
-                <Label htmlFor="orderingEnabled" className="cursor-pointer font-medium">
-                  🧾 Table ordering
-                </Label>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  Let guests add items to a cart and place orders from the table QR menu. Turn
-                  this off to show a read-only digital menu only.
+            {!isMenuPlan && (
+              <div className="space-y-2">
+                <Label htmlFor="city">City (for smart suggestions)</Label>
+                <Input
+                  id="city"
+                  name="city"
+                  defaultValue={city}
+                  placeholder="e.g. Bangalore, Mumbai, Delhi"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Used to fetch live weather for contextual menu suggestions on the guest app.
                 </p>
               </div>
-            </div>
+            )}
+
+            {!isMenuPlan && (
+              <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
+                <input
+                  type="checkbox"
+                  id="orderingEnabled"
+                  name="orderingEnabled"
+                  defaultChecked={orderingEnabled}
+                  className="mt-0.5 h-4 w-4 cursor-pointer accent-primary"
+                />
+                <div>
+                  <Label htmlFor="orderingEnabled" className="cursor-pointer font-medium">
+                    🧾 Table ordering
+                  </Label>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Let guests add items to a cart and place orders from the table QR menu. Turn
+                    this off to show a read-only digital menu only.
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
               <input
@@ -320,10 +325,12 @@ export function SettingsPanel({
             <div>
               <CardTitle className="flex items-center gap-2">
                 <QrCode className="h-5 w-5" />
-                Tables & QR codes
+                {isMenuPlan ? "Menu QR code" : "Tables & QR codes"}
               </CardTitle>
               <CardDescription>
-                Create tables, print QR sheets, and share ordering links.
+                {isMenuPlan
+                  ? "Print a QR code guests can scan to view your digital menu."
+                  : "Create tables, print QR sheets, and share ordering links."}
               </CardDescription>
             </div>
             {tables.length > 0 && (
@@ -346,6 +353,44 @@ export function SettingsPanel({
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {isMenuPlan ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Your menu is live at{" "}
+                <span className="font-mono font-medium">/r/{slug}</span>.
+                Print the QR below and place it on your counter so guests can scan and view your menu.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                className="gap-2"
+                disabled={isPrinting}
+                onClick={async () => {
+                  setIsPrinting(true);
+                  try {
+                    const url = `${window.location.origin}/r/${slug}`;
+                    const { default: QRCode } = await import("qrcode");
+                    const dataUrl = await QRCode.toDataURL(url, { width: 300, margin: 2 });
+                    const win = window.open("", "_blank");
+                    if (win) {
+                      win.document.write(`<html><body style="text-align:center;padding:40px;font-family:sans-serif"><h2>${restaurantName}</h2><img src="${dataUrl}" style="width:260px"/><p style="font-size:12px;color:#666">${url}</p><script>window.print();<\/script></body></html>`);
+                      win.document.close();
+                    }
+                  } finally {
+                    setIsPrinting(false);
+                  }
+                }}
+              >
+                {isPrinting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Printer className="h-4 w-4" />
+                )}
+                Print menu QR
+              </Button>
+            </div>
+          ) : (
+          <>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -564,6 +609,8 @@ export function SettingsPanel({
                 </div>
               ))}
             </div>
+          )}
+          </>
           )}
         </CardContent>
       </Card>

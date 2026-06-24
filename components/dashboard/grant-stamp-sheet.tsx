@@ -10,26 +10,25 @@ import { Label } from "@/components/ui/label";
 interface StampResult {
   customer: { id: string; name: string | null; phone: string; points: number; visits: number };
   threshold: number;
+  pointsPerVisit: number;
   rewardTitle: string;
   readyToRedeem: boolean;
   isNewCustomer: boolean;
 }
 
 function StampCircles({ filled, total }: { filled: number; total: number }) {
-  const display = Math.min(total, 12);
-  const filledCount = Math.min(filled, display);
   return (
     <div className="flex flex-wrap justify-center gap-2">
-      {Array.from({ length: display }).map((_, i) => (
+      {Array.from({ length: total }).map((_, i) => (
         <div
           key={i}
-          className={`h-8 w-8 rounded-full border-2 flex items-center justify-center transition-all ${
-            i < filledCount
+          className={`h-9 w-9 rounded-full border-2 flex items-center justify-center transition-all ${
+            i < filled
               ? "border-amber-500 bg-amber-500"
               : "border-border bg-muted/30"
           }`}
         >
-          {i < filledCount && <Star className="h-4 w-4 text-white fill-white" />}
+          {i < filled && <Star className="h-4 w-4 text-white fill-white" />}
         </div>
       ))}
     </div>
@@ -261,16 +260,17 @@ export function GrantStampSheet({ restaurantId }: { restaurantId: string }) {
                 </p>
               </div>
 
-              {result && (
+              {result && (() => {
+                const ppv = result.pointsPerVisit || 1;
+                const stampsEarned = Math.floor(result.customer.points / ppv);
+                const stampsTotal = Math.round(result.threshold / ppv);
+                return (
                 <>
                   <div className="rounded-2xl border border-border bg-muted/30 p-4">
                     <p className="mb-3 text-center text-sm font-medium text-muted-foreground">
-                      {result.customer.points} / {result.threshold} stamps
+                      {stampsEarned} / {stampsTotal} stamps
                     </p>
-                    <StampCircles
-                      filled={result.customer.points}
-                      total={result.threshold}
-                    />
+                    <StampCircles filled={stampsEarned} total={stampsTotal} />
                   </div>
 
                   {result.readyToRedeem && (
@@ -292,7 +292,8 @@ export function GrantStampSheet({ restaurantId }: { restaurantId: string }) {
                     </div>
                   )}
                 </>
-              )}
+                );
+              })()}
 
               <div className="flex gap-3">
                 <Button

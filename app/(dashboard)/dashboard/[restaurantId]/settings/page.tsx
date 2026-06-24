@@ -39,6 +39,7 @@ export default async function SettingsPage({
         smartSuggestionsEnabled={(restaurant as any).smart_suggestions_enabled ?? true}
         rewardsEnabled={(restaurant as any).rewards_enabled ?? false}
         orderingEnabled={(restaurant as any).ordering_enabled ?? true}
+        plan={(restaurant as any).plan ?? "menu"}
         tables={tables ?? []}
       />
     </div>

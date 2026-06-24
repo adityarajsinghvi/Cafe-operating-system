@@ -111,6 +111,8 @@ export async function POST(req: Request, { params }: Params) {
 
   const newPoints = currentPoints + pointsToAdd;
 
+  const pointsPerVisit = restaurant.loyalty_points_per_order;
+
   return NextResponse.json({
     customer: {
       id: customerId,
@@ -120,6 +122,7 @@ export async function POST(req: Request, { params }: Params) {
       visits: currentVisits + 1,
     },
     threshold,
+    pointsPerVisit,
     rewardTitle: restaurant.reward_title,
     readyToRedeem: newPoints >= threshold,
     isNewCustomer: !existing,

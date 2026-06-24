@@ -18,11 +18,12 @@ export async function GET(_req: Request, { params }: Params) {
     (admin as any)
       .from("restaurants")
       .select(
-        "rewards_enabled, reward_title, reward_description, loyalty_points_per_order, loyalty_redemption_threshold",
+        "plan, rewards_enabled, reward_title, reward_description, loyalty_points_per_order, loyalty_redemption_threshold",
       )
       .eq("id", restaurantId)
       .single() as Promise<{
         data: {
+          plan: string;
           rewards_enabled: boolean;
           reward_title: string;
           reward_description: string | null;
@@ -101,6 +102,7 @@ export async function GET(_req: Request, { params }: Params) {
     }));
 
   return NextResponse.json({
+    plan: restaurant.plan,
     config: {
       enabled: restaurant.rewards_enabled,
       pointsPerVisit: restaurant.loyalty_points_per_order,

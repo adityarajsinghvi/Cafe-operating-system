@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Layers, Plus, Sparkles } from "lucide-react";
+import { ArrowRight, Plus, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getRestaurantById } from "@/services/restaurants.service";
-import { getPublishedMenuStats } from "@/services/menu.service";
-import { listSectionsWithCounts } from "@/services/sections.service";
-import { SectionsManager } from "@/components/dashboard/sections-manager";
+import { getPublishedMenuStats, getMenuCategoryOverview } from "@/services/menu.service";
 
 export default async function MenuPage({
   params,
@@ -23,10 +21,10 @@ export default async function MenuPage({
 }) {
   const { restaurantId } = await params;
   const { published } = await searchParams;
-  const [restaurant, stats, sections] = await Promise.all([
+  const [restaurant, stats, categories] = await Promise.all([
     getRestaurantById(restaurantId),
     getPublishedMenuStats(restaurantId),
-    listSectionsWithCounts(restaurantId),
+    getMenuCategoryOverview(restaurantId),
   ]);
 
   const hasMenu = (stats?.itemCount ?? 0) > 0;
@@ -101,26 +99,29 @@ export default async function MenuPage({
             </CardContent>
           </Card>
 
-          {/* Sections manager */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-start gap-3">
-                <div className="rounded-xl bg-primary/10 p-2.5">
-                  <Layers className="h-5 w-5" />
+          {/* Category overview */}
+          {categories.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Categories</CardTitle>
+                <CardDescription>
+                  What&apos;s on your menu right now.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
+                  {categories.map((cat) => (
+                    <div key={cat.id} className="flex items-center justify-between px-4 py-3">
+                      <span className="font-medium text-sm">{cat.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {cat.itemCount} item{cat.itemCount !== 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <CardTitle>Menu sections</CardTitle>
-                  <CardDescription className="mt-1">
-                    Group your categories into top-level sections guests can browse — e.g. Coffee, Food, Specials.
-                    Each section appears as a filter in the guest menu.
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <SectionsManager restaurantId={restaurantId} initialSections={sections} />
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
       ) : (
         <Card className="overflow-hidden">

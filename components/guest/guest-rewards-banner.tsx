@@ -18,20 +18,18 @@ interface RewardsLookup {
 }
 
 function StampCircles({ filled, total }: { filled: number; total: number }) {
-  const display = Math.min(total, 12);
-  const filledCount = Math.min(filled, display);
   return (
     <div className="flex flex-wrap justify-center gap-2">
-      {Array.from({ length: display }).map((_, i) => (
+      {Array.from({ length: total }).map((_, i) => (
         <div
           key={i}
-          className={`h-8 w-8 rounded-full border-2 flex items-center justify-center`}
+          className="h-9 w-9 rounded-full border-2 flex items-center justify-center"
           style={{
-            borderColor: i < filledCount ? "var(--guest-accent)" : "var(--guest-border)",
-            background: i < filledCount ? "var(--guest-accent)" : "transparent",
+            borderColor: i < filled ? "var(--guest-accent)" : "var(--guest-border)",
+            background: i < filled ? "var(--guest-accent)" : "transparent",
           }}
         >
-          {i < filledCount && <Star className="h-4 w-4 fill-white text-white" />}
+          {i < filled && <Star className="h-4 w-4 fill-white text-white" />}
         </div>
       ))}
     </div>
@@ -201,6 +199,12 @@ export function GuestRewardsBanner({ restaurantId }: { restaurantId: string }) {
 
                   {data.found && data.customer && (
                     <>
+                      {(() => {
+                        const ppv = data.pointsPerVisit || 1;
+                        const stampsEarned = Math.floor(data.customer.points / ppv);
+                        const stampsTotal = Math.round(data.threshold / ppv);
+                        return (
+                      <>
                       <div
                         className="rounded-2xl border p-4"
                         style={{ borderColor: "var(--guest-border)", background: "var(--guest-bg)" }}
@@ -209,9 +213,9 @@ export function GuestRewardsBanner({ restaurantId }: { restaurantId: string }) {
                           className="mb-3 text-center text-sm font-medium"
                           style={{ color: "var(--guest-ink-muted)" }}
                         >
-                          {data.customer.points} / {data.threshold} stamps
+                          {stampsEarned} / {stampsTotal} stamps
                         </p>
-                        <StampCircles filled={data.customer.points} total={data.threshold} />
+                        <StampCircles filled={stampsEarned} total={stampsTotal} />
                       </div>
 
                       {data.customer.points >= data.threshold ? (
@@ -235,11 +239,14 @@ export function GuestRewardsBanner({ restaurantId }: { restaurantId: string }) {
                           className="text-center text-sm"
                           style={{ color: "var(--guest-ink-muted)" }}
                         >
-                          {data.threshold - data.customer.points} more stamp
-                          {data.threshold - data.customer.points !== 1 ? "s" : ""} to earn{" "}
+                          {Math.round(data.threshold / (data.pointsPerVisit || 1)) - Math.floor(data.customer.points / (data.pointsPerVisit || 1))} more stamp
+                          {(Math.round(data.threshold / (data.pointsPerVisit || 1)) - Math.floor(data.customer.points / (data.pointsPerVisit || 1))) !== 1 ? "s" : ""} to earn{" "}
                           <span style={{ color: "var(--guest-ink)" }}>{data.rewardTitle}</span>
                         </p>
                       )}
+                      </>
+                        );
+                      })()}
                     </>
                   )}
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CreditCard, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { signOutAction } from "@/lib/actions/auth";
@@ -24,7 +24,7 @@ const dashboardNavItems: Array<{
   { label: "Rewards",    href: "/rewards",    flag: "loyalty" },
   { label: "Customers",  href: "/customers" },
   { label: "Settings",   href: "/settings" },
-  { label: "Billing",    href: "/billing",    icon: <CreditCard className="h-3.5 w-3.5 opacity-60" /> },
+  { label: "Billing",    href: "/billing" },
 ];
 
 function NavLink({

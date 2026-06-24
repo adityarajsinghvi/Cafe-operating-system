@@ -106,10 +106,13 @@ export function MenuUploadForm({ restaurantId }: { restaurantId: string }) {
         `/dashboard/${restaurantId}/menu/review/${data.jobId}`,
       );
     } catch (submitError) {
+      const raw = submitError instanceof Error ? submitError.message : "";
+      // Never expose technical error details to users
+      const isTechnical = /GoogleGenerativeAI|503|fetch|network|ECONNREFUSED|timeout|API/i.test(raw);
       setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Something went wrong",
+        isTechnical || !raw
+          ? "Our AI is busy right now. Please try again in a moment."
+          : raw,
       );
       setIsSubmitting(false);
     }
