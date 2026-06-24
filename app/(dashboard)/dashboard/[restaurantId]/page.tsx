@@ -4,6 +4,8 @@ import { ArrowRight, BookOpen, Clock, History, QrCode, Settings, Star, Users } f
 import { getRestaurantById } from "@/services/restaurants.service";
 import { getPublishedMenuStats } from "@/services/menu.service";
 import { getActiveOrderCounts } from "@/services/orders.service";
+import { getFeatures } from "@/lib/features";
+import { GrantStampSheet } from "@/components/dashboard/grant-stamp-sheet";
 
 /* ── Chit-style section header ───────────────────────────────────────────── */
 function ChitHeading({ children }: { children: React.ReactNode }) {
@@ -75,6 +77,8 @@ export default async function RestaurantHomePage({
     getActiveOrderCounts(restaurantId),
   ]);
 
+  const features = restaurant ? getFeatures(restaurant) : null;
+
   const hasMenu = (stats?.itemCount ?? 0) > 0;
   const activeOrders = orderCounts?.activeCount ?? 0;
   const pendingOrders = activeOrders;
@@ -144,6 +148,11 @@ export default async function RestaurantHomePage({
           </div>
         </div>
       </div>
+
+      {/* ── Grant Stamp (loyalty plan) ── */}
+      {features?.loyalty && (
+        <GrantStampSheet restaurantId={restaurantId} />
+      )}
 
       {/* ── Quick shortcuts ── */}
       <div>

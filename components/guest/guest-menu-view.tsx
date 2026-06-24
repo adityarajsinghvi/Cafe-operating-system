@@ -24,6 +24,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FeaturedItemCard } from "@/components/guest/featured-item-card";
 import { useGuestCart } from "@/components/guest/guest-cart-provider";
 import { GuestIdentityDialog } from "@/components/guest/guest-identity-dialog";
+import { GuestRewardsBanner } from "@/components/guest/guest-rewards-banner";
 import { MenuItemCard } from "@/components/guest/menu-item-card";
 import { MenuItemDetailSheet } from "@/components/guest/menu-item-detail-sheet";
 import { RestaurantHero } from "@/components/guest/restaurant-hero";
@@ -973,6 +974,10 @@ export function GuestMenuView({ menu }: { menu: GuestMenu }) {
           setIdentityOpen(false);
         }}
       />
+
+      {menu.restaurant.loyaltyEnabled && (
+        <GuestRewardsBanner restaurantId={menu.restaurant.id} />
+      )}
     </div>
   );
 }
