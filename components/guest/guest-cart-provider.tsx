@@ -306,54 +306,32 @@ export function GuestCartProvider({
     };
   }, [sessionId, guestRestaurantId, refreshOrders]);
 
-  // Strategy 2–4 — Smart polling fallback (only runs when Realtime is down).
+  // Polling — always runs while there are active orders to track.
+  // Realtime fires refreshOrders too when it works, but we can't rely on it
+  // because Supabase RLS can silently block events on the anon key while
+  // still showing SUBSCRIBED status. Poll aggressively so updates are never
+  // missed regardless of realtime health.
   useEffect(() => {
     if (!sessionReady) return;
 
-    // Strategy 3 — stop entirely when nothing needs tracking
     const allDone = activeOrders.length > 0 &&
       activeOrders.every((o) => o.status === "served" || o.status === "cancelled");
     const needsPoll = (activeOrderCount > 0 || hasSessionBill) && !allDone;
     if (!needsPoll) return;
 
-    // Strategy 4 — exponential backoff based on oldest active order age
-    const oldestActive = activeOrders
-      .filter((o) => o.status !== "served" && o.status !== "cancelled")
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0];
-
-    const orderAgeMs = oldestActive
-      ? Date.now() - new Date(oldestActive.createdAt).getTime()
-      : 0;
-
-    const backoffMs =
-      orderAgeMs < 2 * 60_000  ? 12_000  // first 2 min: every 12s
-      : orderAgeMs < 10 * 60_000 ? 30_000 // 2–10 min: every 30s
-      : 60_000;                            // 10+ min: every 60s
-
     const interval = setInterval(() => {
-      // Strategy 1 — skip poll if Realtime is connected
-      if (realtimeConnectedRef.current) return;
-      // Strategy 2 — skip poll if tab is hidden
       if (document.visibilityState !== "visible") return;
       refreshOrders();
-    }, backoffMs);
+    }, 8_000); // 8s — fast enough for live tracking, light enough for mobile
 
-    // Strategy 2 — refresh immediately when tab becomes visible again
     const onVisible = () => {
-      if (document.visibilityState === "visible" && !realtimeConnectedRef.current) {
-        refreshOrders();
-      }
+      if (document.visibilityState === "visible") refreshOrders();
     };
     document.addEventListener("visibilitychange", onVisible);
-
-    // Strategy 5 — clean up on page unload
-    const onUnload = () => clearInterval(interval);
-    window.addEventListener("beforeunload", onUnload);
 
     return () => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisible);
-      window.removeEventListener("beforeunload", onUnload);
     };
   }, [sessionReady, activeOrders, activeOrderCount, hasSessionBill, refreshOrders]);
 
