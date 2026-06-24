@@ -8,7 +8,7 @@ import { updateOrderStatusAction } from "@/lib/actions/orders";
 import { springSnappy } from "@/lib/motion/presets";
 import { cn } from "@/lib/utils";
 import type { Order } from "@/types/order";
-import { formatOrderTotal, ORDER_STATUS_FLOW } from "@/types/order";
+import { formatOrderTotal, TABLE_ORDER_STATUS_FLOW } from "@/types/order";
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -23,10 +23,11 @@ const STATUS_STAMP: Record<
   Order["status"],
   { label: string; border: string; color: string; bg: string }
 > = {
-  pending:   { label: "PENDING",   border: "#d97706", color: "#92400e", bg: "#fffbeb" },
-  confirmed: { label: "CONFIRMED", border: "#2563eb", color: "#1e40af", bg: "#eff6ff" },
-  served:    { label: "SERVED",    border: "#6b7280", color: "#374151", bg: "#f9fafb" },
-  cancelled: { label: "CANCELLED", border: "#dc2626", color: "#7f1d1d", bg: "#fef2f2" },
+  pending_payment: { label: "AWAITING\nPAYMENT", border: "#7c3aed", color: "#4c1d95", bg: "#f5f3ff" },
+  pending:         { label: "PENDING",   border: "#d97706", color: "#92400e", bg: "#fffbeb" },
+  confirmed:       { label: "CONFIRMED", border: "#2563eb", color: "#1e40af", bg: "#eff6ff" },
+  served:          { label: "SERVED",    border: "#6b7280", color: "#374151", bg: "#f9fafb" },
+  cancelled:       { label: "CANCELLED", border: "#dc2626", color: "#7f1d1d", bg: "#fef2f2" },
 };
 
 export function OrderCard({
@@ -41,7 +42,9 @@ export function OrderCard({
   onUpdated?: () => void;
 }) {
   const [isUpdating, startUpdate] = useTransition();
-  const currentIndex = ORDER_STATUS_FLOW.indexOf(order.status);
+  const isPendingPayment = order.status === "pending_payment";
+  // For progress dots, treat pending_payment as pre-pending (index -1 in TABLE flow)
+  const currentIndex = isPendingPayment ? -1 : TABLE_ORDER_STATUS_FLOW.indexOf(order.status);
   const stamp = STATUS_STAMP[order.status] ?? STATUS_STAMP.pending;
   const isServed = order.status === "served";
   const isCancelled = order.status === "cancelled";
@@ -63,6 +66,8 @@ export function OrderCard({
         "relative overflow-hidden rounded-xl border bg-card shadow-sm",
         order.status === "pending"
           ? "border-amber-300/80 shadow-amber-100/60 ring-1 ring-amber-200/60"
+          : order.status === "pending_payment"
+          ? "border-violet-300/80 shadow-violet-100/60 ring-1 ring-violet-200/60"
           : "border-border",
       )}
     >
@@ -88,6 +93,11 @@ export function OrderCard({
             style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
             {order.tableLabel ? `Table ${order.tableLabel}` : "Walk-in"}
+            {order.tokenNumber !== null && (
+              <span className="ml-2 text-xs font-normal" style={{ color: "rgba(250,249,245,0.65)" }}>
+                #{order.tokenNumber}
+              </span>
+            )}
           </p>
           <span className="flex items-center gap-1 text-xs" style={{ color: "rgba(250,249,245,0.55)" }}>
             <Clock className="h-3 w-3" />
@@ -106,7 +116,7 @@ export function OrderCard({
 
       {/* Progress dots */}
       <div className="relative flex items-center gap-1 px-4 pt-3 pb-0">
-        {ORDER_STATUS_FLOW.map((step, index) => (
+        {TABLE_ORDER_STATUS_FLOW.map((step, index) => (
           <div
             key={step}
             className={cn(
@@ -162,23 +172,37 @@ export function OrderCard({
 
         {!isServed && !isCancelled && (
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={isUpdating || order.status === "confirmed"}
-              onClick={() => setStatus("confirmed")}
-              className="rounded-lg border border-border px-3 py-2 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
-            >
-              {order.status === "confirmed" ? "Confirmed ✓" : "Confirm order"}
-            </button>
-            <button
-              type="button"
-              disabled={isUpdating}
-              onClick={() => setStatus("served")}
-              className="rounded-lg px-3.5 py-2 text-[11px] font-bold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{ background: "#c96442" }}
-            >
-              Order served
-            </button>
+            {isPendingPayment ? (
+              <button
+                type="button"
+                disabled={isUpdating}
+                onClick={() => setStatus("confirmed")}
+                className="rounded-lg px-3.5 py-2 text-[11px] font-bold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+                style={{ background: "#7c3aed" }}
+              >
+                Confirm payment
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  disabled={isUpdating || order.status === "confirmed"}
+                  onClick={() => setStatus("confirmed")}
+                  className="rounded-lg border border-border px-3 py-2 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
+                >
+                  {order.status === "confirmed" ? "Confirmed ✓" : "Confirm order"}
+                </button>
+                <button
+                  type="button"
+                  disabled={isUpdating}
+                  onClick={() => setStatus("served")}
+                  className="rounded-lg px-3.5 py-2 text-[11px] font-bold text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+                  style={{ background: "#c96442" }}
+                >
+                  Order served
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

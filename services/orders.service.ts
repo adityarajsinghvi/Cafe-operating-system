@@ -53,6 +53,7 @@ function mapOrder(
     notes: string | null;
     subtotal_cents: number;
     item_count: number;
+    token_number?: number | null;
     created_at: string;
     updated_at: string;
   },
@@ -67,6 +68,7 @@ function mapOrder(
     notes: row.notes,
     subtotalCents: row.subtotal_cents,
     itemCount: row.item_count,
+    tokenNumber: row.token_number ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     items,
@@ -86,13 +88,18 @@ export async function createGuestOrder(
 
   const { data: restaurant } = await admin
     .from("restaurants")
-    .select("ordering_enabled")
+    .select("ordering_enabled, upi_id, token_display_enabled")
     .eq("id", session.restaurantId)
     .maybeSingle();
 
   if (restaurant && (restaurant as { ordering_enabled?: boolean }).ordering_enabled === false) {
     return { error: "Ordering is currently unavailable" };
   }
+
+  const upiId: string | null = (restaurant as { upi_id?: string | null } | null)?.upi_id ?? null;
+  const tokenDisplayEnabled: boolean =
+    (restaurant as { token_display_enabled?: boolean } | null)?.token_display_enabled ?? false;
+  const needsToken = Boolean(upiId) || tokenDisplayEnabled;
 
   const parsed = submitOrderSchema.safeParse(payload);
   if (!parsed.success) {
@@ -164,6 +171,25 @@ export async function createGuestOrder(
     });
   }
 
+  // Generate next token for today if required
+  let tokenNumber: number | null = null;
+  if (needsToken) {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const { data: lastToken } = await admin
+      .from("orders")
+      .select("token_number")
+      .eq("restaurant_id", session.restaurantId)
+      .gte("created_at", todayStart.toISOString())
+      .not("token_number", "is", null)
+      .order("token_number", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    tokenNumber = ((lastToken as { token_number?: number | null } | null)?.token_number ?? 0) + 1;
+  }
+
+  const initialStatus = upiId ? ("pending_payment" as const) : ("pending" as const);
+
   const orderInsertData = {
     restaurant_id: session.restaurantId,
     table_session_id: session.id,
@@ -171,7 +197,8 @@ export async function createGuestOrder(
     notes: parsed.data.notes ?? null,
     subtotal_cents: subtotalCents,
     item_count: itemCount,
-    status: "pending" as const,
+    status: initialStatus,
+    ...(tokenNumber !== null ? { token_number: tokenNumber } : {}),
     ...(customerId ? { customer_id: customerId } : {}),
   };
 
@@ -493,7 +520,7 @@ export async function getActiveOrderCounts(restaurantId: string) {
   const ctx = await requireRestaurantAccess(restaurantId);
   if (!ctx) return null;
 
-  const activeStatuses: OrderStatus[] = ["pending", "confirmed"];
+  const activeStatuses: OrderStatus[] = ["pending_payment", "pending", "confirmed"];
 
   const { count } = await ctx.admin
     .from("orders")

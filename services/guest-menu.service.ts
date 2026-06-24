@@ -19,6 +19,7 @@ function mapRestaurant(row: {
   primary_color: string;
   currency: string;
   ordering_enabled?: boolean | null;
+  upi_id?: string | null;
   smart_suggestions_enabled?: boolean | null;
   service_requests_enabled?: boolean | null;
   rewards_enabled?: boolean | null;
@@ -35,6 +36,7 @@ function mapRestaurant(row: {
     primaryColor: row.primary_color,
     currency: row.currency,
     orderingEnabled: row.ordering_enabled ?? true,
+    upiId: row.upi_id ?? null,
     smartSuggestionsEnabled: row.smart_suggestions_enabled ?? false,
     serviceRequestsEnabled: (row.service_requests_enabled ?? false) || isTable,
     loyaltyEnabled: row.rewards_enabled ?? false,
@@ -77,7 +79,7 @@ export async function getGuestMenuBySlug(
   const { data: restaurant, error: restaurantError } = await (supabase as any)
     .from("restaurants")
     .select(
-      "id, slug, name, description, logo_url, cover_image_url, primary_color, currency, plan, ordering_enabled, smart_suggestions_enabled, service_requests_enabled, rewards_enabled",
+      "id, slug, name, description, logo_url, cover_image_url, primary_color, currency, plan, ordering_enabled, upi_id, smart_suggestions_enabled, service_requests_enabled, rewards_enabled",
     )
     .eq("slug", slug)
     .eq("onboarding_completed", true)

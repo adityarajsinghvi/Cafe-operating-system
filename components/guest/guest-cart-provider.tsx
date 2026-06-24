@@ -24,6 +24,7 @@ interface GuestCartContextValue {
   tableLabel: string | null;
   sessionReady: boolean;
   orderingEnabled: boolean;
+  upiId: string | null;
   serviceRequestsEnabled: boolean;
   loyaltyEnabled: boolean;
   cartOpen: boolean;
@@ -78,6 +79,7 @@ export function GuestCartProvider({
   slug,
   tableToken,
   orderingEnabled = true,
+  upiId = null,
   serviceRequestsEnabled = false,
   loyaltyEnabled = false,
   children,
@@ -86,6 +88,7 @@ export function GuestCartProvider({
   slug: string;
   tableToken?: string;
   orderingEnabled?: boolean;
+  upiId?: string | null;
   serviceRequestsEnabled?: boolean;
   loyaltyEnabled?: boolean;
   children: ReactNode;
@@ -497,6 +500,7 @@ export function GuestCartProvider({
       tableLabel,
       sessionReady,
       orderingEnabled,
+      upiId,
       serviceRequestsEnabled,
       loyaltyEnabled,
       cartOpen,
@@ -532,6 +536,7 @@ export function GuestCartProvider({
       tableLabel,
       sessionReady,
       orderingEnabled,
+      upiId,
       serviceRequestsEnabled,
       loyaltyEnabled,
       cartOpen,

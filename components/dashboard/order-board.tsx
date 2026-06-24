@@ -9,7 +9,7 @@ import { useRestaurantRealtime } from "@/hooks/use-restaurant-realtime";
 import { playNewOrderSound } from "@/lib/dashboard/order-notifications";
 import type { Order, OrderStatus } from "@/types/order";
 
-const ACTIVE_STATUSES: OrderStatus[] = ["pending", "confirmed"];
+const ACTIVE_STATUSES: OrderStatus[] = ["pending_payment", "pending", "confirmed"];
 
 export function OrderBoard({
   restaurantId,

@@ -9,6 +9,7 @@ export function GuestRestaurantLayout({
   tableToken,
   primaryColor,
   orderingEnabled,
+  upiId,
   serviceRequestsEnabled,
   smartSuggestionsEnabled,
   loyaltyEnabled,
@@ -20,6 +21,7 @@ export function GuestRestaurantLayout({
   tableToken?: string;
   primaryColor?: string;
   orderingEnabled?: boolean;
+  upiId?: string | null;
   serviceRequestsEnabled?: boolean;
   smartSuggestionsEnabled?: boolean;
   loyaltyEnabled?: boolean;
@@ -33,6 +35,7 @@ export function GuestRestaurantLayout({
       tableToken={tableToken}
       primaryColor={primaryColor}
       orderingEnabled={orderingEnabled}
+      upiId={upiId}
       serviceRequestsEnabled={serviceRequestsEnabled}
       smartSuggestionsEnabled={smartSuggestionsEnabled}
       loyaltyEnabled={loyaltyEnabled}

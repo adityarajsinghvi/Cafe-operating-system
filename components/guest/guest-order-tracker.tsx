@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronUp, Check, Clock, Receipt, UtensilsCrossed, X } from "lucide-react";
+import { ChevronUp, Check, Clock, Copy, Receipt, UtensilsCrossed, X } from "lucide-react";
 
 import { useGuestCart } from "@/components/guest/guest-cart-provider";
 import {
@@ -33,14 +33,71 @@ function timeAgo(iso: string) {
   return `${Math.floor(minutes / 60)}h ago`;
 }
 
+function UpiPaymentPanel({
+  order,
+  upiId,
+  currency,
+}: {
+  order: Order;
+  upiId: string;
+  currency: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  function copyUpiId() {
+    navigator.clipboard.writeText(upiId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className="rounded-2xl border border-violet-200 bg-violet-50 dark:border-violet-800 dark:bg-violet-950/30 p-4 space-y-3">
+      <div className="flex items-center gap-2">
+        <span className="text-lg">💳</span>
+        <div>
+          <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">Pay to confirm</p>
+          <p className="text-xs text-violet-700 dark:text-violet-300">
+            Send {formatOrderTotal(order.subtotalCents, currency)} via UPI
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-2 rounded-xl bg-white dark:bg-violet-900/40 border border-violet-200 dark:border-violet-700 px-3 py-2.5">
+        <span className="text-sm font-mono text-violet-900 dark:text-violet-100 truncate">{upiId}</span>
+        <button
+          type="button"
+          onClick={copyUpiId}
+          className="shrink-0 flex items-center gap-1 text-xs font-medium text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-violet-100 transition-colors"
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+
+      {order.tokenNumber !== null && (
+        <p className="text-center text-xs text-violet-600 dark:text-violet-400">
+          Use token <span className="font-bold">#{order.tokenNumber}</span> as payment reference
+        </p>
+      )}
+
+      <p className="text-center text-[11px] text-violet-500 dark:text-violet-400">
+        The vendor will confirm your order once payment is received
+      </p>
+    </div>
+  );
+}
+
 function OrderDetail({
   order,
   currency,
   primaryColor,
+  upiId,
 }: {
   order: Order;
   currency: string;
   primaryColor?: string;
+  upiId?: string | null;
 }) {
   const meta = GUEST_ORDER_STATUS[order.status];
 
@@ -87,6 +144,10 @@ function OrderDetail({
           </span>
         </div>
       </div>
+
+      {order.status === "pending_payment" && upiId && (
+        <UpiPaymentPanel order={order} upiId={upiId} currency={currency} />
+      )}
 
       {order.status === "confirmed" && (
         <div className="rounded-2xl bg-amber-500/15 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:text-amber-200">
@@ -220,6 +281,7 @@ export function GuestOrderTracker({
     itemCount,
     cartOpen,
     sessionReady,
+    upiId,
   } = useGuestCart();
 
   const trackableOrders = activeOrders.filter((order) =>
@@ -437,6 +499,7 @@ export function GuestOrderTracker({
                       order={displayOrder}
                       currency={currency}
                       primaryColor={primaryColor}
+                      upiId={upiId}
                     />
                   </AnimatePresence>
                 </>

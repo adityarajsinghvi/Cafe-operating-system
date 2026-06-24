@@ -10,6 +10,7 @@ export type GuestRestaurant = {
   primaryColor: string;
   currency: string;
   orderingEnabled: boolean;
+  upiId: string | null;
   smartSuggestionsEnabled: boolean;
   serviceRequestsEnabled: boolean;
   loyaltyEnabled: boolean;

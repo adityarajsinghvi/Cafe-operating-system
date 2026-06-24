@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { DietaryType } from "@/types/database";
 
 export const orderStatusSchema = z.enum([
+  "pending_payment",
   "pending",
   "confirmed",
   "served",
@@ -20,13 +21,15 @@ export type OrderStatus = z.infer<typeof orderStatusSchema>;
 export type ServiceRequestType = z.infer<typeof serviceRequestTypeSchema>;
 export type ServiceRequestStatus = z.infer<typeof serviceRequestStatusSchema>;
 
-export const ORDER_STATUS_FLOW: OrderStatus[] = [
-  "pending",
-  "confirmed",
-  "served",
-];
+// Flow for table-plan orders (classic sit-down)
+export const TABLE_ORDER_STATUS_FLOW: OrderStatus[] = ["pending", "confirmed", "served"];
+// Flow for cart-plan orders placed through UPI payment
+export const CART_ORDER_STATUS_FLOW: OrderStatus[] = ["pending_payment", "confirmed", "served"];
+// Kept for backward-compat references that don't need plan awareness
+export const ORDER_STATUS_FLOW: OrderStatus[] = TABLE_ORDER_STATUS_FLOW;
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+  pending_payment: "Awaiting payment",
   pending: "New",
   confirmed: "Confirmed",
   served: "Served",
@@ -34,6 +37,7 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 };
 
 export const ORDER_STATUS_BADGE_CLASS: Record<OrderStatus, string> = {
+  pending_payment: "bg-violet-100 text-violet-900",
   pending: "bg-amber-100 text-amber-900",
   confirmed: "bg-sky-100 text-sky-900",
   served: "bg-muted text-muted-foreground",
@@ -50,6 +54,11 @@ export const GUEST_ORDER_STATUS: Record<
   OrderStatus,
   { label: string; description: string; emoji: string }
 > = {
+  pending_payment: {
+    label: "Pay to confirm",
+    description: "Complete your payment to confirm the order",
+    emoji: "💳",
+  },
   pending: {
     label: "Order sent",
     description: "The kitchen has received your order",
@@ -72,7 +81,7 @@ export const GUEST_ORDER_STATUS: Record<
   },
 };
 
-export const GUEST_TRACKABLE_STATUSES: OrderStatus[] = ["pending", "confirmed"];
+export const GUEST_TRACKABLE_STATUSES: OrderStatus[] = ["pending_payment", "pending", "confirmed"];
 
 export const cartLineSchema = z.object({
   menuItemId: z.string().uuid(),
@@ -109,6 +118,7 @@ export interface Order {
   notes: string | null;
   subtotalCents: number;
   itemCount: number;
+  tokenNumber: number | null;
   createdAt: string;
   updatedAt: string;
   items: OrderItem[];
@@ -159,7 +169,9 @@ export function getNextOrderStatus(
   current: OrderStatus,
 ): OrderStatus | null {
   if (current === "cancelled" || current === "served") return null;
-  const index = ORDER_STATUS_FLOW.indexOf(current);
-  if (index === -1 || index === ORDER_STATUS_FLOW.length - 1) return null;
-  return ORDER_STATUS_FLOW[index + 1];
+  // pending_payment → confirmed (skip pending — payment confirmation IS the prep trigger)
+  if (current === "pending_payment") return "confirmed";
+  const index = TABLE_ORDER_STATUS_FLOW.indexOf(current);
+  if (index === -1 || index === TABLE_ORDER_STATUS_FLOW.length - 1) return null;
+  return TABLE_ORDER_STATUS_FLOW[index + 1];
 }

@@ -18,6 +18,7 @@ export function GuestProviders({
   tableToken,
   primaryColor,
   orderingEnabled = true,
+  upiId = null,
   serviceRequestsEnabled = false,
   smartSuggestionsEnabled = false,
   loyaltyEnabled = false,
@@ -29,6 +30,7 @@ export function GuestProviders({
   tableToken?: string;
   primaryColor?: string;
   orderingEnabled?: boolean;
+  upiId?: string | null;
   serviceRequestsEnabled?: boolean;
   smartSuggestionsEnabled?: boolean;
   loyaltyEnabled?: boolean;
@@ -41,6 +43,7 @@ export function GuestProviders({
         slug={slug}
         tableToken={tableToken}
         orderingEnabled={orderingEnabled}
+        upiId={upiId}
         serviceRequestsEnabled={serviceRequestsEnabled}
         loyaltyEnabled={loyaltyEnabled}
       >

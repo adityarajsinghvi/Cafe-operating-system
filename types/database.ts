@@ -8,7 +8,7 @@ export type ExtractionJobStatus =
   | "completed"
   | "failed";
 export type DietaryType = "veg" | "non_veg" | "egg" | "vegan" | "unknown";
-export type OrderStatus = "pending" | "confirmed" | "served" | "cancelled";
+export type OrderStatus = "pending_payment" | "pending" | "confirmed" | "served" | "cancelled";
 export type ServiceRequestType = "waiter" | "water" | "bill";
 export type ServiceRequestStatus = "open" | "acknowledged" | "resolved";
 export type BillPaymentStatus = "unpaid" | "paid";
@@ -408,6 +408,7 @@ export interface Database {
           notes: string | null;
           subtotal_cents: number;
           item_count: number;
+          token_number: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -420,6 +421,7 @@ export interface Database {
           notes?: string | null;
           subtotal_cents?: number;
           item_count?: number;
+          token_number?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -432,6 +434,7 @@ export interface Database {
           notes?: string | null;
           subtotal_cents?: number;
           item_count?: number;
+          token_number?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -530,7 +533,7 @@ export interface Database {
       extraction_source: ExtractionSource;
       extraction_job_status: ExtractionJobStatus;
       dietary_type: DietaryType;
-      order_status: OrderStatus;
+      order_status: "pending_payment" | "pending" | "confirmed" | "served" | "cancelled";
       service_request_type: ServiceRequestType;
       service_request_status: ServiceRequestStatus;
       bill_payment_status: BillPaymentStatus;
