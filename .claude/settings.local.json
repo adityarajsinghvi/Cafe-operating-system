@@ -32,7 +32,11 @@
       "Bash(git commit -m ' *)",
       "Bash(gh repo *)",
       "PowerShell(where.exe git; where.exe gh; Get-Command gh -ErrorAction SilentlyContinue; [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) -split \";\" | Select-String -Pattern \"gh|github\")",
-      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"C:\\\\Users\\\\Aditya\\\\AppData\\\\Local\\\\Programs\" -ErrorAction SilentlyContinue | Select-Object Name)"
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"C:\\\\Users\\\\Aditya\\\\AppData\\\\Local\\\\Programs\" -ErrorAction SilentlyContinue | Select-Object Name)",
+      "Bash(git push *)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "PowerShell(cd C:\\\\Projects\\\\parcha_foundation\\\\parcha; git add types/order.ts types/guest.ts types/database.ts services/orders.service.ts services/guest-menu.service.ts lib/features.ts components/guest/guest-cart-provider.tsx components/guest/guest-providers.tsx components/guest/guest-layout.tsx components/guest/guest-order-tracker.tsx components/dashboard/order-card.tsx components/dashboard/order-board.tsx app/\\(guest\\)/r/[slug]/page.tsx; git status)"
     ]
   }
 }

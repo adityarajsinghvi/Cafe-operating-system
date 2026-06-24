@@ -52,38 +52,49 @@ function UpiPaymentPanel({
   }
 
   return (
-    <div className="rounded-2xl border border-violet-200 bg-violet-50 dark:border-violet-800 dark:bg-violet-950/30 p-4 space-y-3">
-      <div className="flex items-center gap-2">
-        <span className="text-lg">💳</span>
-        <div>
-          <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">Pay to confirm</p>
-          <p className="text-xs text-violet-700 dark:text-violet-300">
-            Send {formatOrderTotal(order.subtotalCents, currency)} via UPI
+    <div className="rounded-2xl border-2 border-violet-300 bg-violet-50 dark:border-violet-700 dark:bg-violet-950/40 overflow-hidden">
+      {/* Token — very large so it's readable from a distance */}
+      {order.tokenNumber !== null && (
+        <div className="bg-violet-600 dark:bg-violet-700 px-4 py-5 text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-violet-200 mb-1">Your Token</p>
+          <p className="text-8xl font-black tabular-nums leading-none text-white">
+            {order.tokenNumber}
+          </p>
+          <p className="mt-2 text-xs text-violet-200">Show this number at the counter</p>
+        </div>
+      )}
+
+      <div className="p-4 space-y-3">
+        <div className="text-center">
+          <p className="text-base font-bold text-violet-900 dark:text-violet-100">
+            Pay {formatOrderTotal(order.subtotalCents, currency)} to confirm
+          </p>
+          <p className="text-xs text-violet-600 dark:text-violet-400 mt-0.5">
+            Send via any UPI app
+          </p>
+        </div>
+
+        {/* UPI ID copy row */}
+        <div className="flex items-center justify-between gap-2 rounded-xl bg-white dark:bg-violet-900/40 border border-violet-200 dark:border-violet-700 px-3 py-2.5">
+          <span className="text-sm font-mono font-semibold text-violet-900 dark:text-violet-100 truncate">{upiId}</span>
+          <button
+            type="button"
+            onClick={copyUpiId}
+            className="shrink-0 flex items-center gap-1.5 rounded-lg bg-violet-100 dark:bg-violet-800 px-2.5 py-1.5 text-xs font-semibold text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-700 transition-colors"
+          >
+            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? "Copied!" : "Copy"}
+          </button>
+        </div>
+
+        {/* Captain instruction */}
+        <div className="flex items-center gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 px-3 py-2.5">
+          <span className="text-base">📱</span>
+          <p className="text-xs font-medium text-amber-800 dark:text-amber-200">
+            Show payment proof + your token number to the captain to collect your order
           </p>
         </div>
       </div>
-
-      <div className="flex items-center justify-between gap-2 rounded-xl bg-white dark:bg-violet-900/40 border border-violet-200 dark:border-violet-700 px-3 py-2.5">
-        <span className="text-sm font-mono text-violet-900 dark:text-violet-100 truncate">{upiId}</span>
-        <button
-          type="button"
-          onClick={copyUpiId}
-          className="shrink-0 flex items-center gap-1 text-xs font-medium text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-violet-100 transition-colors"
-        >
-          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-          {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
-
-      {order.tokenNumber !== null && (
-        <p className="text-center text-xs text-violet-600 dark:text-violet-400">
-          Use token <span className="font-bold">#{order.tokenNumber}</span> as payment reference
-        </p>
-      )}
-
-      <p className="text-center text-[11px] text-violet-500 dark:text-violet-400">
-        The vendor will confirm your order once payment is received
-      </p>
     </div>
   );
 }
@@ -93,11 +104,13 @@ function OrderDetail({
   currency,
   primaryColor,
   upiId,
+  queueAhead,
 }: {
   order: Order;
   currency: string;
   primaryColor?: string;
   upiId?: string | null;
+  queueAhead?: number;
 }) {
   const meta = GUEST_ORDER_STATUS[order.status];
 
@@ -157,8 +170,23 @@ function OrderDetail({
       )}
 
       {order.status === "confirmed" && (
-        <div className="rounded-2xl bg-amber-500/15 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:text-amber-200">
-          {meta.emoji} The kitchen is on it!
+        <div className="space-y-2">
+          <div className="rounded-2xl bg-amber-500/15 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:text-amber-200">
+            {meta.emoji} The kitchen is on it!
+          </div>
+          {typeof queueAhead === "number" && queueAhead > 0 && (
+            <div className="rounded-2xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 px-4 py-3 text-center">
+              <p className="text-2xl font-black text-sky-700 dark:text-sky-300">{queueAhead}</p>
+              <p className="text-xs font-medium text-sky-600 dark:text-sky-400 mt-0.5">
+                {queueAhead === 1 ? "order" : "orders"} being prepared ahead of yours
+              </p>
+            </div>
+          )}
+          {typeof queueAhead === "number" && queueAhead === 0 && (
+            <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 px-4 py-3 text-center text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+              🎉 You&apos;re next!
+            </div>
+          )}
         </div>
       )}
     </motion.div>
@@ -289,6 +317,7 @@ export function GuestOrderTracker({
     cartOpen,
     sessionReady,
     upiId,
+    queueAhead,
   } = useGuestCart();
 
   const trackableOrders = activeOrders.filter((order) =>
@@ -509,6 +538,7 @@ export function GuestOrderTracker({
                       currency={currency}
                       primaryColor={primaryColor}
                       upiId={upiId}
+                      queueAhead={queueAhead}
                     />
                   </AnimatePresence>
                 </>

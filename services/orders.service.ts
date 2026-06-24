@@ -244,12 +244,27 @@ export async function createGuestOrder(
   };
 }
 
+export async function cancelExpiredPendingPaymentOrders(restaurantId: string) {
+  const admin = createAdminClient();
+  if (!admin) return;
+  const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+  await admin
+    .from("orders")
+    .update({ status: "cancelled" })
+    .eq("restaurant_id", restaurantId)
+    .eq("status", "pending_payment")
+    .lt("created_at", cutoff);
+}
+
 export async function listGuestSessionOrders(sessionToken: string) {
   const admin = createAdminClient();
   if (!admin) return { error: "Server configuration error" as const };
 
   const session = await getSessionByToken(sessionToken);
   if (!session) return { error: "Session expired" as const };
+
+  // Auto-cancel stale pending_payment orders before fetching
+  await cancelExpiredPendingPaymentOrders(session.restaurantId);
 
   // Fetch current session orders + historical orders if customer is known
   let orderQuery = admin
@@ -293,11 +308,19 @@ export async function listGuestSessionOrders(sessionToken: string) {
     itemsByOrder.set(item.order_id, existing);
   }
 
+  // Count how many confirmed/pending orders exist in this restaurant ahead of the guest
+  const { count: queueAhead } = await admin
+    .from("orders")
+    .select("*", { count: "exact", head: true })
+    .eq("restaurant_id", session.restaurantId)
+    .in("status", ["pending", "confirmed"]);
+
   return {
     orders: orders.map((order) =>
       mapOrder(order, itemsByOrder.get(order.id) ?? []),
     ),
     billPaymentStatus: session.billPaymentStatus,
+    queueAhead: queueAhead ?? 0,
   };
 }
 
@@ -307,6 +330,9 @@ export async function listRestaurantOrders(
 ) {
   const ctx = await requireRestaurantAccess(restaurantId);
   if (!ctx) return null;
+
+  // Auto-cancel stale pending_payment orders on every board load
+  await cancelExpiredPendingPaymentOrders(restaurantId);
 
   let query = ctx.admin
     .from("orders")

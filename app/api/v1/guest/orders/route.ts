@@ -19,6 +19,7 @@ export async function GET() {
   return NextResponse.json({
     orders: result.orders,
     billPaymentStatus: result.billPaymentStatus ?? null,
+    queueAhead: result.queueAhead ?? 0,
   });
 }
 

@@ -27,6 +27,7 @@ interface GuestCartContextValue {
   upiId: string | null;
   serviceRequestsEnabled: boolean;
   loyaltyEnabled: boolean;
+  queueAhead: number;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   activeOrders: Order[];
@@ -103,6 +104,7 @@ export function GuestCartProvider({
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [billPaymentStatus, setBillPaymentStatus] =
     useState<BillPaymentStatus | null>(null);
+  const [queueAhead, setQueueAhead] = useState<number>(0);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [guestRestaurantId, setGuestRestaurantId] = useState<string | null>(null);
   const realtimeConnectedRef = useRef(false);
@@ -201,6 +203,7 @@ export function GuestCartProvider({
 
       setActiveOrders(orders);
       setBillPaymentStatus(data.billPaymentStatus ?? null);
+      setQueueAhead(data.queueAhead ?? 0);
     } catch {
       // silent fail on poll
     }
@@ -503,6 +506,7 @@ export function GuestCartProvider({
       upiId,
       serviceRequestsEnabled,
       loyaltyEnabled,
+      queueAhead,
       cartOpen,
       setCartOpen,
       activeOrders,
@@ -539,6 +543,7 @@ export function GuestCartProvider({
       upiId,
       serviceRequestsEnabled,
       loyaltyEnabled,
+      queueAhead,
       cartOpen,
       activeOrders,
       focusOrder,

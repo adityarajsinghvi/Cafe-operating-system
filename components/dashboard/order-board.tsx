@@ -37,7 +37,7 @@ export function OrderBoard({
 
         for (const order of nextOrders) {
           if (
-            order.status === "pending" &&
+            (order.status === "pending" || order.status === "pending_payment") &&
             !knownOrderIdsRef.current.has(order.id)
           ) {
             playNewOrderSound();
@@ -63,8 +63,8 @@ export function OrderBoard({
   }, [realtimeConnected]);
 
   useEffect(() => {
-    if (realtimeConnected) return;
-    const interval = setInterval(refresh, 60000);
+    // 10s fallback when realtime is down; 30s when live (catches missed events)
+    const interval = setInterval(refresh, realtimeConnected ? 30000 : 10000);
     return () => clearInterval(interval);
   }, [refresh, realtimeConnected]);
 

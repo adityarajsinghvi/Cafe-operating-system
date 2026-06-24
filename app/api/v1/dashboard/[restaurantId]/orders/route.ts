@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { listRestaurantOrders } from "@/services/orders.service";
+import { cancelExpiredPendingPaymentOrders, listRestaurantOrders } from "@/services/orders.service";
 import type { OrderStatus } from "@/types/order";
 
 export async function GET(
@@ -15,6 +15,7 @@ export async function GET(
     ? (statusParam.split(",") as OrderStatus[])
     : undefined;
 
+  await cancelExpiredPendingPaymentOrders(restaurantId);
   const orders = await listRestaurantOrders(restaurantId, { status });
 
   if (!orders) {
