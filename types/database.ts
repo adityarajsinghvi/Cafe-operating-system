@@ -1,4 +1,5 @@
 export type RestaurantStatus = "trial" | "active" | "suspended";
+export type PlanTier = "cart" | "table";
 export type MemberRole = "owner" | "manager" | "staff";
 export type ExtractionSource = "photo" | "pdf" | "url";
 export type ExtractionJobStatus =
@@ -51,9 +52,21 @@ export interface Database {
           currency: string;
           timezone: string;
           upi_qr_url: string | null;
+          upi_id: string | null;
           settings: Record<string, unknown>;
           status: RestaurantStatus;
+          plan: PlanTier;
           onboarding_completed: boolean;
+          // per-feature toggles
+          smart_suggestions_enabled: boolean;
+          ordering_enabled: boolean;
+          rewards_enabled: boolean;
+          token_display_enabled: boolean;
+          bills_enabled: boolean;
+          service_requests_enabled: boolean;
+          sections_enabled: boolean;
+          full_analytics_enabled: boolean;
+          ai_insights_enabled: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -68,9 +81,20 @@ export interface Database {
           currency?: string;
           timezone?: string;
           upi_qr_url?: string | null;
+          upi_id?: string | null;
           settings?: Record<string, unknown>;
           status?: RestaurantStatus;
+          plan?: PlanTier;
           onboarding_completed?: boolean;
+          smart_suggestions_enabled?: boolean;
+          ordering_enabled?: boolean;
+          rewards_enabled?: boolean;
+          token_display_enabled?: boolean;
+          bills_enabled?: boolean;
+          service_requests_enabled?: boolean;
+          sections_enabled?: boolean;
+          full_analytics_enabled?: boolean;
+          ai_insights_enabled?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -85,9 +109,20 @@ export interface Database {
           currency?: string;
           timezone?: string;
           upi_qr_url?: string | null;
+          upi_id?: string | null;
           settings?: Record<string, unknown>;
           status?: RestaurantStatus;
+          plan?: PlanTier;
           onboarding_completed?: boolean;
+          smart_suggestions_enabled?: boolean;
+          ordering_enabled?: boolean;
+          rewards_enabled?: boolean;
+          token_display_enabled?: boolean;
+          bills_enabled?: boolean;
+          service_requests_enabled?: boolean;
+          sections_enabled?: boolean;
+          full_analytics_enabled?: boolean;
+          ai_insights_enabled?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -490,6 +525,7 @@ export interface Database {
     };
     Enums: {
       restaurant_status: RestaurantStatus;
+      plan_tier: PlanTier;
       member_role: MemberRole;
       extraction_source: ExtractionSource;
       extraction_job_status: ExtractionJobStatus;

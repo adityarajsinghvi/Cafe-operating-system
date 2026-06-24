@@ -3,21 +3,27 @@ import { LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { signOutAction } from "@/lib/actions/auth";
+import type { RestaurantFeatures } from "@/lib/features";
 import { ParchaWordmark } from "@/components/shared/parcha-logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { SheetClose } from "@/components/ui/sheet";
 
-export const dashboardNavItems = [
+// flag matches a key on RestaurantFeatures; absence means always visible
+const dashboardNavItems: Array<{
+  label: string;
+  href: string;
+  flag?: keyof RestaurantFeatures;
+}> = [
   { label: "Dashboard", href: "" },
-  { label: "Analytics", href: "/analytics" },
-  { label: "Menu", href: "/menu" },
-  { label: "Orders", href: "/orders", flag: "ordering" as const },
-  { label: "History", href: "/history" },
-  { label: "Rewards", href: "/rewards", flag: "rewards" as const },
-  { label: "Customers", href: "/customers" },
-  { label: "Settings", href: "/settings" },
-] as const;
+  { label: "Analytics",  href: "/analytics" },
+  { label: "Menu",       href: "/menu" },
+  { label: "Orders",     href: "/orders",   flag: "ordering" },
+  { label: "History",    href: "/history",  flag: "bills" },
+  { label: "Rewards",    href: "/rewards",  flag: "loyalty" },
+  { label: "Customers",  href: "/customers" },
+  { label: "Settings",   href: "/settings" },
+];
 
 function NavLink({
   href,
@@ -55,22 +61,18 @@ export function DashboardNav({
   restaurantName,
   mode = "desktop",
   onNavigate,
-  orderingEnabled = true,
-  rewardsEnabled = true,
+  features,
 }: {
   restaurantId: string;
   restaurantName: string;
   mode?: "desktop" | "mobile";
   onNavigate?: () => void;
-  orderingEnabled?: boolean;
-  rewardsEnabled?: boolean;
+  features: RestaurantFeatures;
 }) {
   const basePath = `/dashboard/${restaurantId}`;
-  const visibleNavItems = dashboardNavItems.filter((item) => {
-    if ("flag" in item && item.flag === "ordering") return orderingEnabled;
-    if ("flag" in item && item.flag === "rewards") return rewardsEnabled;
-    return true;
-  });
+  const visibleNavItems = dashboardNavItems.filter((item) =>
+    item.flag ? Boolean(features[item.flag]) : true,
+  );
 
   return (
     <div className="flex h-full flex-col">
@@ -87,32 +89,16 @@ export function DashboardNav({
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
-        {visibleNavItems.map((item) => {
-          const href = `${basePath}${item.href}`;
-
-          if ("disabled" in item && item.disabled) {
-            return (
-              <span
-                key={item.label}
-                className="rounded-xl px-3 py-2.5 text-sm text-muted-foreground/60"
-              >
-                {item.label}
-                <span className="ml-2 text-xs">Soon</span>
-              </span>
-            );
-          }
-
-          return (
-            <NavLink
-              key={item.label}
-              href={href}
-              mode={mode}
-              onNavigate={onNavigate}
-            >
-              {item.label}
-            </NavLink>
-          );
-        })}
+        {visibleNavItems.map((item) => (
+          <NavLink
+            key={item.label}
+            href={`${basePath}${item.href}`}
+            mode={mode}
+            onNavigate={onNavigate}
+          >
+            {item.label}
+          </NavLink>
+        ))}
       </nav>
 
       <div className="mt-auto flex items-center justify-between border-t border-border pt-4">

@@ -37,6 +37,7 @@ export function GuestBottomNav({ slug }: { slug: string }) {
     setTrackerOpen,
     tableLabel,
     sessionReady,
+    serviceRequestsEnabled,
     requestService,
   } = useGuestCart();
   const basePath = `/r/${slug}`;
@@ -45,7 +46,7 @@ export function GuestBottomNav({ slug }: { slug: string }) {
 
   const showOrders = activeOrderCount > 0 || hasSessionBill;
   const ordersBadge = activeOrderCount || (hasSessionBill ? 1 : 0);
-  const showServiceBar = sessionReady && Boolean(tableLabel);
+  const showServiceBar = sessionReady && Boolean(tableLabel) && serviceRequestsEnabled;
 
   const items = [
     { id: "menu", label: "Menu", href: basePath, icon: Home },

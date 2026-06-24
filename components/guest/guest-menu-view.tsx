@@ -620,7 +620,9 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
   return (
     <div className="pb-28">
       <div className="pt-3">
-        <SmartSuggestionBanner onSuggestItem={(name) => setQuery(name)} />
+        {menu.restaurant.smartSuggestionsEnabled && (
+          <SmartSuggestionBanner onSuggestItem={(name) => setQuery(name)} />
+        )}
       </div>
 
       {/* Sticky search + filters */}

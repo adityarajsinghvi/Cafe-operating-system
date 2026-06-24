@@ -9,6 +9,9 @@ export function GuestRestaurantLayout({
   tableToken,
   primaryColor,
   orderingEnabled,
+  serviceRequestsEnabled,
+  smartSuggestionsEnabled,
+  loyaltyEnabled,
   children,
 }: {
   slug: string;
@@ -17,6 +20,9 @@ export function GuestRestaurantLayout({
   tableToken?: string;
   primaryColor?: string;
   orderingEnabled?: boolean;
+  serviceRequestsEnabled?: boolean;
+  smartSuggestionsEnabled?: boolean;
+  loyaltyEnabled?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -27,6 +33,9 @@ export function GuestRestaurantLayout({
       tableToken={tableToken}
       primaryColor={primaryColor}
       orderingEnabled={orderingEnabled}
+      serviceRequestsEnabled={serviceRequestsEnabled}
+      smartSuggestionsEnabled={smartSuggestionsEnabled}
+      loyaltyEnabled={loyaltyEnabled}
     >
       {children}
     </GuestProviders>

@@ -299,7 +299,15 @@ function InsightsCard({ restaurantId }: { restaurantId: string }) {
   );
 }
 
-export function AnalyticsDashboard({ restaurantId }: { restaurantId: string }) {
+export function AnalyticsDashboard({
+  restaurantId,
+  showAiInsights = false,
+  showFullAnalytics = true,
+}: {
+  restaurantId: string;
+  showAiInsights?: boolean;
+  showFullAnalytics?: boolean;
+}) {
   const [range, setRange] = useState<AnalyticsRange>("30d");
   const [data, setData] = useState<AnalyticsOverview | null>(null);
   const [loading, setLoading] = useState(true);
@@ -404,8 +412,8 @@ export function AnalyticsDashboard({ restaurantId }: { restaurantId: string }) {
             <PeakHoursHeatmap cells={data.peakHours} />
           </SectionCard>
 
-          {/* AI insights */}
-          <InsightsCard restaurantId={restaurantId} />
+          {/* AI insights — gated behind aiInsights feature flag */}
+          {showAiInsights && <InsightsCard restaurantId={restaurantId} />}
 
           {/* Best / worst sellers */}
           <div className="grid gap-4 sm:grid-cols-2">
@@ -433,18 +441,20 @@ export function AnalyticsDashboard({ restaurantId }: { restaurantId: string }) {
             </SectionCard>
           </div>
 
-          {/* What sells when */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <SectionCard title="Top item by time of day" sub="Most ordered item in each part of the day">
-              <ItemTimeTable rows={data.itemsByHour} emptyText="Not enough data yet." />
-            </SectionCard>
-            <SectionCard title="Top item by day of week" sub="Most ordered item each day">
-              <ItemTimeTable rows={data.itemsByDay} emptyText="Not enough data yet." />
-            </SectionCard>
-          </div>
+          {/* What sells when — full analytics only */}
+          {showFullAnalytics && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <SectionCard title="Top item by time of day" sub="Most ordered item in each part of the day">
+                <ItemTimeTable rows={data.itemsByHour} emptyText="Not enough data yet." />
+              </SectionCard>
+              <SectionCard title="Top item by day of week" sub="Most ordered item each day">
+                <ItemTimeTable rows={data.itemsByDay} emptyText="Not enough data yet." />
+              </SectionCard>
+            </div>
+          )}
 
-          {/* Customer segments */}
-          <div className="grid gap-4 sm:grid-cols-2">
+          {/* Customer segments — full analytics only */}
+          {showFullAnalytics && (<div className="grid gap-4 sm:grid-cols-2">
             <SectionCard title="Customers" sub="New vs returning in this period">
               <div className="flex items-center gap-6">
                 <div>
@@ -485,29 +495,31 @@ export function AnalyticsDashboard({ restaurantId }: { restaurantId: string }) {
                 </div>
               )}
             </SectionCard>
-          </div>
+          </div>)}
 
-          {/* Table turnover */}
-          <SectionCard title="Table turnover" sub="Sessions per table in this period">
-            {data.tableTurnover.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No table sessions yet.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={Math.max(120, data.tableTurnover.length * 36)}>
-                <BarChart data={data.tableTurnover} layout="vertical" margin={{ left: 8 }}>
-                  <XAxis type="number" hide />
-                  <YAxis dataKey="label" type="category" width={70} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    formatter={(value, _name, item) => {
-                      const avgMinutes = (item?.payload as { avgSessionMinutes?: number } | undefined)?.avgSessionMinutes;
-                      return [`${value} sessions${avgMinutes ? ` · avg ${avgMinutes}m` : ""}`, ""];
-                    }}
-                    contentStyle={{ borderRadius: 8, fontSize: 12 }}
-                  />
-                  <Bar dataKey="sessionCount" fill="#c96442" radius={[0, 6, 6, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </SectionCard>
+          {/* Table turnover — full analytics only */}
+          {showFullAnalytics && (
+            <SectionCard title="Table turnover" sub="Sessions per table in this period">
+              {data.tableTurnover.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No table sessions yet.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={Math.max(120, data.tableTurnover.length * 36)}>
+                  <BarChart data={data.tableTurnover} layout="vertical" margin={{ left: 8 }}>
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="label" type="category" width={70} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      formatter={(value, _name, item) => {
+                        const avgMinutes = (item?.payload as { avgSessionMinutes?: number } | undefined)?.avgSessionMinutes;
+                        return [`${value} sessions${avgMinutes ? ` · avg ${avgMinutes}m` : ""}`, ""];
+                      }}
+                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                    />
+                    <Bar dataKey="sessionCount" fill="#c96442" radius={[0, 6, 6, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </SectionCard>
+          )}
         </>
       )}
     </div>

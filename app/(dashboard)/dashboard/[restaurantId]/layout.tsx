@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getFeatures } from "@/lib/features";
 import {
   claimRestaurantOwnership,
   getCurrentUser,
@@ -38,12 +39,13 @@ export default async function RestaurantDashboardLayout({
     );
   }
 
+  const features = getFeatures(restaurant);
+
   return (
     <DashboardShell
       restaurantId={restaurant.id}
       restaurantName={restaurant.name}
-      orderingEnabled={(restaurant as any).ordering_enabled ?? true}
-      rewardsEnabled={(restaurant as any).rewards_enabled ?? false}
+      features={features}
     >
       {children}
     </DashboardShell>

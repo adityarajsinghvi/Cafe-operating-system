@@ -18,6 +18,9 @@ export function GuestProviders({
   tableToken,
   primaryColor,
   orderingEnabled = true,
+  serviceRequestsEnabled = false,
+  smartSuggestionsEnabled = false,
+  loyaltyEnabled = false,
   children,
 }: {
   slug: string;
@@ -26,6 +29,9 @@ export function GuestProviders({
   tableToken?: string;
   primaryColor?: string;
   orderingEnabled?: boolean;
+  serviceRequestsEnabled?: boolean;
+  smartSuggestionsEnabled?: boolean;
+  loyaltyEnabled?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -35,6 +41,8 @@ export function GuestProviders({
         slug={slug}
         tableToken={tableToken}
         orderingEnabled={orderingEnabled}
+        serviceRequestsEnabled={serviceRequestsEnabled}
+        loyaltyEnabled={loyaltyEnabled}
       >
         <GuestShell slug={slug} primaryColor={primaryColor}>
           <GuestTableUrlSync slug={slug} tableToken={tableToken} />

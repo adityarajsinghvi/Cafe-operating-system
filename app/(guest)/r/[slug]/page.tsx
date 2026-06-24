@@ -48,6 +48,9 @@ export default async function GuestRestaurantPage({
       tableToken={tableToken}
       primaryColor={menu.restaurant.primaryColor}
       orderingEnabled={menu.restaurant.orderingEnabled}
+      serviceRequestsEnabled={menu.restaurant.serviceRequestsEnabled}
+      smartSuggestionsEnabled={menu.restaurant.smartSuggestionsEnabled}
+      loyaltyEnabled={menu.restaurant.loyaltyEnabled}
     >
       <GuestMenuView menu={menu} />
     </GuestRestaurantLayout>

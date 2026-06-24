@@ -24,6 +24,8 @@ interface GuestCartContextValue {
   tableLabel: string | null;
   sessionReady: boolean;
   orderingEnabled: boolean;
+  serviceRequestsEnabled: boolean;
+  loyaltyEnabled: boolean;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   activeOrders: Order[];
@@ -76,12 +78,16 @@ export function GuestCartProvider({
   slug,
   tableToken,
   orderingEnabled = true,
+  serviceRequestsEnabled = false,
+  loyaltyEnabled = false,
   children,
 }: {
   restaurantId: string;
   slug: string;
   tableToken?: string;
   orderingEnabled?: boolean;
+  serviceRequestsEnabled?: boolean;
+  loyaltyEnabled?: boolean;
   children: ReactNode;
 }) {
   const cartKey = cartStorageKey(restaurantId, tableToken);
@@ -491,6 +497,8 @@ export function GuestCartProvider({
       tableLabel,
       sessionReady,
       orderingEnabled,
+      serviceRequestsEnabled,
+      loyaltyEnabled,
       cartOpen,
       setCartOpen,
       activeOrders,
@@ -524,6 +532,8 @@ export function GuestCartProvider({
       tableLabel,
       sessionReady,
       orderingEnabled,
+      serviceRequestsEnabled,
+      loyaltyEnabled,
       cartOpen,
       activeOrders,
       focusOrder,

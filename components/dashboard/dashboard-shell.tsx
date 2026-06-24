@@ -8,18 +8,17 @@ import { ParchaIcon } from "@/components/shared/parcha-logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import type { RestaurantFeatures } from "@/lib/features";
 
 export function DashboardShell({
   restaurantId,
   restaurantName,
-  orderingEnabled = true,
-  rewardsEnabled = true,
+  features,
   children,
 }: {
   restaurantId: string;
   restaurantName: string;
-  orderingEnabled?: boolean;
-  rewardsEnabled?: boolean;
+  features: RestaurantFeatures;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -46,8 +45,7 @@ export function DashboardShell({
                 restaurantName={restaurantName}
                 mode="mobile"
                 onNavigate={() => setOpen(false)}
-                orderingEnabled={orderingEnabled}
-                rewardsEnabled={rewardsEnabled}
+                features={features}
               />
             </SheetContent>
           </Sheet>
@@ -68,8 +66,7 @@ export function DashboardShell({
         <DashboardNav
           restaurantId={restaurantId}
           restaurantName={restaurantName}
-          orderingEnabled={orderingEnabled}
-          rewardsEnabled={rewardsEnabled}
+          features={features}
         />
       </aside>
 
