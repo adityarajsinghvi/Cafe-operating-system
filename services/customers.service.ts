@@ -1,5 +1,32 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export interface RewardsQuickStats {
+  totalCustomers: number;
+  totalStamps: number;
+  totalRedemptions: number;
+}
+
+export async function getRewardsQuickStats(
+  restaurantId: string,
+): Promise<RewardsQuickStats> {
+  const admin = createAdminClient();
+  if (!admin) return { totalCustomers: 0, totalStamps: 0, totalRedemptions: 0 };
+
+  const { data } = await (admin as any)
+    .from("customers")
+    .select("visit_count, redemptions_count")
+    .eq("restaurant_id", restaurantId) as {
+      data: Array<{ visit_count: number; redemptions_count: number }> | null;
+    };
+
+  const rows = data ?? [];
+  return {
+    totalCustomers: rows.length,
+    totalStamps: rows.reduce((s, r) => s + r.visit_count, 0),
+    totalRedemptions: rows.reduce((s, r) => s + r.redemptions_count, 0),
+  };
+}
+
 export interface Customer {
   id: string;
   restaurantId: string;

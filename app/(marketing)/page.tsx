@@ -20,10 +20,13 @@ import {
   Sparkles,
   Star,
   TrendingUp,
+  X,
   Zap,
   Search,
   Bell,
 } from "lucide-react";
+
+import { PLAN_PRICING, PLAN_FEATURES } from "@/lib/features";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /*  DESIGN TOKENS                                                              */
@@ -1012,6 +1015,123 @@ export default function HomePage() {
               <FeatureCard key={f.title} {...f} />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          PRICING
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="px-4 py-16 sm:py-24" style={{ background: C.paperMid }}>
+        <div className="mx-auto max-w-5xl">
+          <FadeUp className="mb-12 text-center">
+            <p className="mb-2 text-[11px] font-black uppercase tracking-[0.2em]" style={{ color: C.terracotta }}>Simple pricing</p>
+            <h2 className="text-3xl font-black tracking-tight sm:text-4xl" style={{ fontFamily: SERIF }}>
+              One price. All year. No surprises.
+            </h2>
+            <p className="mt-3 text-muted-foreground">Start small and upgrade as you grow. All plans include a digital menu.</p>
+          </FadeUp>
+
+          <div className="grid gap-5 sm:grid-cols-3">
+            {(["menu", "starter", "pro"] as const).map((key) => {
+              const info = PLAN_PRICING[key];
+              const features = PLAN_FEATURES[key];
+              const isPopular = key === "starter";
+              return (
+                <FadeUp key={key} delay={key === "menu" ? 0 : key === "starter" ? 0.07 : 0.14}>
+                  <div
+                    className={`relative flex flex-col rounded-3xl border-2 p-6 h-full ${
+                      isPopular
+                        ? "border-[#c96442] shadow-xl shadow-[#c96442]/10"
+                        : "border-[#e2e0d8] bg-[#faf9f5]"
+                    }`}
+                    style={isPopular ? { background: C.espresso } : undefined}
+                  >
+                    {isPopular && (
+                      <span
+                        className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-black uppercase tracking-widest text-white"
+                        style={{ background: C.terracotta }}
+                      >
+                        Most popular
+                      </span>
+                    )}
+
+                    <div className="mb-5">
+                      <p
+                        className="text-sm font-bold uppercase tracking-widest"
+                        style={{ color: isPopular ? "rgba(250,249,245,0.55)" : C.inkMuted }}
+                      >
+                        {info.label}
+                      </p>
+                      <p
+                        className="mt-1 text-4xl font-black"
+                        style={{ color: isPopular ? C.paper : C.ink, fontFamily: SERIF }}
+                      >
+                        ₹{info.price.toLocaleString("en-IN")}
+                        <span
+                          className="text-base font-normal"
+                          style={{ color: isPopular ? "rgba(250,249,245,0.45)" : C.inkMuted }}
+                        >
+                          {" "}/yr
+                        </span>
+                      </p>
+                      <p
+                        className="mt-1.5 text-sm"
+                        style={{ color: isPopular ? "rgba(250,249,245,0.6)" : C.inkMuted }}
+                      >
+                        {info.description}
+                      </p>
+                    </div>
+
+                    <ul className="mb-6 flex-1 space-y-2">
+                      {features.map((f) => (
+                        <li key={f.text} className="flex items-center gap-2.5 text-sm">
+                          {f.included ? (
+                            <Check
+                              className="h-4 w-4 shrink-0"
+                              style={{ color: isPopular ? C.terracotta : "#16a34a" }}
+                            />
+                          ) : (
+                            <X
+                              className="h-4 w-4 shrink-0 opacity-30"
+                              style={{ color: isPopular ? C.paper : C.ink }}
+                            />
+                          )}
+                          <span
+                            style={{
+                              color: f.included
+                                ? isPopular ? C.paper : C.ink
+                                : isPopular ? "rgba(250,249,245,0.3)" : C.inkMuted,
+                              textDecoration: f.included ? "none" : "line-through",
+                            }}
+                          >
+                            {f.text}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Link
+                      href="/signup"
+                      className="block rounded-2xl py-3 text-center text-sm font-bold transition-all hover:-translate-y-0.5"
+                      style={
+                        isPopular
+                          ? { background: C.terracotta, color: "#fff" }
+                          : { background: C.espresso, color: C.paper }
+                      }
+                    >
+                      Get started →
+                    </Link>
+                  </div>
+                </FadeUp>
+              );
+            })}
+          </div>
+
+          <FadeUp delay={0.2}>
+            <p className="mt-8 text-center text-sm" style={{ color: C.inkMuted }}>
+              All plans renew yearly. Upgrade or switch plans anytime via WhatsApp.
+            </p>
+          </FadeUp>
         </div>
       </section>
 

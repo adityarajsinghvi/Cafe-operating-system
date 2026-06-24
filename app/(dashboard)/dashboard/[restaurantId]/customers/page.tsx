@@ -7,6 +7,7 @@ import {
   ArrowUp,
   ArrowUpDown,
   Calendar,
+  MessageCircle,
   Phone,
   ShoppingBag,
   Star,
@@ -47,12 +48,20 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(true);
   const [sortKey, setSortKey] = useState<SortKey>("lastVisit");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [threshold, setThreshold] = useState<number | null>(null);
+  const [rewardTitle, setRewardTitle] = useState<string>("Free item");
 
   useEffect(() => {
-    fetch(`/api/v1/dashboard/${restaurantId}/customers`)
-      .then((r) => r.json())
-      .then((d) => setCustomers(d.customers ?? []))
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch(`/api/v1/dashboard/${restaurantId}/customers`).then((r) => r.json()),
+      fetch(`/api/v1/dashboard/${restaurantId}/rewards`).then((r) => r.json()),
+    ]).then(([cData, rData]) => {
+      setCustomers(cData.customers ?? []);
+      if (rData.config) {
+        setThreshold(rData.config.redemptionThreshold);
+        setRewardTitle(rData.config.rewardTitle ?? "Free item");
+      }
+    }).finally(() => setLoading(false));
   }, [restaurantId]);
 
   function toggleSort(key: SortKey) {
@@ -133,6 +142,52 @@ export default function CustomersPage() {
           </div>
         ))}
       </div>
+
+      {/* Almost there — customers 1 stamp away */}
+      {threshold !== null && (() => {
+        const almostThere = customers.filter(
+          (c) => c.loyaltyPoints === threshold - 1,
+        );
+        if (almostThere.length === 0) return null;
+        return (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+            <p className="mb-3 text-sm font-bold text-amber-800">
+              🔔 Almost there — {almostThere.length} customer{almostThere.length !== 1 ? "s" : ""} need{almostThere.length === 1 ? "s" : ""} 1 more stamp to earn {rewardTitle}
+            </p>
+            <div className="space-y-2">
+              {almostThere.map((c) => {
+                const msg = encodeURIComponent(
+                  `Hi ${c.name ?? "there"}! You're just 1 stamp away from earning ${rewardTitle} at our café. Visit us again soon! 😊`,
+                );
+                return (
+                  <div
+                    key={c.id}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-white px-3 py-2.5"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-amber-900 truncate">
+                        {c.name ?? "Anonymous"} · +91 {c.phone}
+                      </p>
+                      <p className="text-xs text-amber-700">
+                        {c.loyaltyPoints} / {threshold} stamps
+                      </p>
+                    </div>
+                    <a
+                      href={`https://wa.me/91${c.phone}?text=${msg}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5" />
+                      WhatsApp
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {customers.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border px-6 py-16 text-center">

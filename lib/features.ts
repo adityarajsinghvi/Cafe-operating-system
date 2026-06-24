@@ -43,9 +43,9 @@ export function getFeatures(r: Restaurant): RestaurantFeatures {
     plan,
     planLabel: PLAN_LABELS[plan] ?? "Menu",
 
-    // Ordering + token: starter and pro only
-    ordering:     (r.ordering_enabled ?? false) || isStarter || isPro,
-    tokenDisplay: (r.token_display_enabled ?? false) || isStarter || isPro,
+    // Ordering + token: menu plan never gets it; starter/pro use the toggle (default on)
+    ordering:     (isStarter || isPro) ? (r.ordering_enabled ?? true) : false,
+    tokenDisplay: (isStarter || isPro) ? (r.token_display_enabled ?? true) : false,
 
     // Always off (hidden globally)
     smartSuggestions: false,

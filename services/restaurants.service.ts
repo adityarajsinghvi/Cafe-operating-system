@@ -143,9 +143,18 @@ export async function createRestaurantForUser(name: string, slug: string, plan: 
   const expiresAt = new Date();
   expiresAt.setFullYear(expiresAt.getFullYear() + 1);
 
+  const orderingOn = plan !== "menu";
+
   const { data: restaurant, error } = await admin
     .from("restaurants")
-    .insert({ name, slug, plan, plan_expires_at: expiresAt.toISOString() })
+    .insert({
+      name,
+      slug,
+      plan,
+      plan_expires_at: expiresAt.toISOString(),
+      ordering_enabled: orderingOn,
+      token_display_enabled: orderingOn,
+    })
     .select("id")
     .single();
 

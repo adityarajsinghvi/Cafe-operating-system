@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, Clock, History, QrCode, Settings, Star, Users } f
 import { getRestaurantById } from "@/services/restaurants.service";
 import { getPublishedMenuStats } from "@/services/menu.service";
 import { getActiveOrderCounts } from "@/services/orders.service";
+import { getRewardsQuickStats } from "@/services/customers.service";
 import { getFeatures } from "@/lib/features";
 import { GrantStampSheet } from "@/components/dashboard/grant-stamp-sheet";
 
@@ -71,10 +72,11 @@ export default async function RestaurantHomePage({
   params: Promise<{ restaurantId: string }>;
 }) {
   const { restaurantId } = await params;
-  const [restaurant, stats, orderCounts] = await Promise.all([
+  const [restaurant, stats, orderCounts, rewardStats] = await Promise.all([
     getRestaurantById(restaurantId),
     getPublishedMenuStats(restaurantId),
     getActiveOrderCounts(restaurantId),
+    getRewardsQuickStats(restaurantId),
   ]);
 
   const features = restaurant ? getFeatures(restaurant) : null;
@@ -149,9 +151,30 @@ export default async function RestaurantHomePage({
         </div>
       </div>
 
-      {/* ── Grant Stamp (loyalty plan) ── */}
+      {/* ── Loyalty stats + Grant Stamp ── */}
       {features?.loyalty && (
-        <GrantStampSheet restaurantId={restaurantId} />
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: "Customers", value: rewardStats.totalCustomers },
+              { label: "Total stamps", value: rewardStats.totalStamps },
+              { label: "Redeemed", value: rewardStats.totalRedemptions },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className="rounded-2xl border border-border bg-card px-3 py-4 text-center shadow-sm"
+              >
+                <p className="text-2xl font-black" style={{ fontFamily: "Georgia, serif" }}>
+                  {s.value}
+                </p>
+                <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </div>
+          <GrantStampSheet restaurantId={restaurantId} />
+        </div>
       )}
 
       {/* ── Quick shortcuts ── */}
