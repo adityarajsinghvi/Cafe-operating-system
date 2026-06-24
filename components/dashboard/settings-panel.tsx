@@ -263,24 +263,7 @@ export function SettingsPanel({
               </p>
             </div>
 
-            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
-              <input
-                type="checkbox"
-                id="smartSuggestionsEnabled"
-                name="smartSuggestionsEnabled"
-                defaultChecked={smartSuggestionsEnabled}
-                className="mt-0.5 h-4 w-4 cursor-pointer accent-primary"
-              />
-              <div>
-                <Label htmlFor="smartSuggestionsEnabled" className="cursor-pointer font-medium">
-                  ✦ Smart suggestions
-                </Label>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  Show an AI-powered contextual suggestion on the guest menu based on weather,
-                  time of day, and the customer&apos;s taste profile.
-                </p>
-              </div>
-            </div>
+            {/* Smart suggestions hidden — coming soon */}
 
             <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
               <input

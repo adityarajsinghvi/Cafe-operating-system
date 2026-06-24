@@ -67,7 +67,6 @@ function TabBar({
   orderingEnabled: boolean;
 }) {
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: "discover", label: "Discover", icon: <Sparkles className="h-3 w-3" /> },
     { id: "menu",     label: "Menu",     icon: <UtensilsCrossed className="h-3 w-3" /> },
     ...(orderingEnabled
       ? [{ id: "orders" as const, label: "Orders", icon: <Clock className="h-3 w-3" /> }]
@@ -620,9 +619,6 @@ function MenuTab({ menu }: { menu: GuestMenu }) {
   return (
     <div className="pb-28">
       <div className="pt-3">
-        {menu.restaurant.smartSuggestionsEnabled && (
-          <SmartSuggestionBanner onSuggestItem={(name) => setQuery(name)} />
-        )}
       </div>
 
       {/* Sticky search + filters */}
@@ -918,7 +914,7 @@ function OrdersTab({ currency, onTabChange }: { currency: string; onTabChange: (
 /* ── MAIN ────────────────────────────────────────────────────────────────── */
 
 export function GuestMenuView({ menu }: { menu: GuestMenu }) {
-  const [activeTab, setActiveTab] = useState<Tab>("discover");
+  const [activeTab, setActiveTab] = useState<Tab>("menu");
   const [ordersBadge, setOrdersBadge] = useState(false);
   const [identityOpen, setIdentityOpen] = useState(false);
   const itemCount = menu.categories.reduce((t, c) => t + c.items.length, 0);
