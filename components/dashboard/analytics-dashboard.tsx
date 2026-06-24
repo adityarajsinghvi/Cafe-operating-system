@@ -107,6 +107,43 @@ function SectionCard({ title, sub, children }: { title: string; sub?: string; ch
   );
 }
 
+function BusiestHoursList({ cells }: { cells: AnalyticsOverview["peakHours"] }) {
+  const byHour = cells.reduce<Record<number, number>>((acc, c) => {
+    acc[c.hour] = (acc[c.hour] ?? 0) + c.orderCount;
+    return acc;
+  }, {});
+  const sorted = Object.entries(byHour)
+    .map(([h, count]) => ({ hour: Number(h), count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+  const max = Math.max(1, sorted[0]?.count ?? 1);
+
+  function formatHour(h: number) {
+    const ampm = h < 12 ? "AM" : "PM";
+    const display = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    return `${display}:00 ${ampm}`;
+  }
+
+  return (
+    <div className="space-y-3">
+      {sorted.map(({ hour, count }) => (
+        <div key={hour} className="space-y-1">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium">{formatHour(hour)}</span>
+            <span className="text-xs text-muted-foreground">{count} orders</span>
+          </div>
+          <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full"
+              style={{ width: `${(count / max) * 100}%`, background: "#c96442" }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PeakHoursHeatmap({ cells }: { cells: AnalyticsOverview["peakHours"] }) {
   const max = Math.max(1, ...cells.map((c) => c.orderCount));
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -308,7 +345,9 @@ export function AnalyticsDashboard({
   showAiInsights?: boolean;
   showFullAnalytics?: boolean;
 }) {
-  const [range, setRange] = useState<AnalyticsRange>("30d");
+  const cartPlan = !showFullAnalytics;
+  const availableRanges: AnalyticsRange[] = cartPlan ? ["today", "7d"] : RANGES;
+  const [range, setRange] = useState<AnalyticsRange>(cartPlan ? "today" : "30d");
   const [data, setData] = useState<AnalyticsOverview | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -336,7 +375,7 @@ export function AnalyticsDashboard({
             </p>
           </div>
           <div className="flex gap-1.5">
-            {RANGES.map((r) => (
+            {availableRanges.map((r) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
@@ -370,12 +409,21 @@ export function AnalyticsDashboard({
             <KpiCard icon={Wallet} label="Revenue" value={formatMoney(data.kpis.revenueCents, data.currency)} deltaPct={data.kpis.revenueDeltaPct} />
             <KpiCard icon={Receipt} label="Orders" value={data.kpis.orderCount} deltaPct={data.kpis.orderCountDeltaPct} />
             <KpiCard icon={TrendingUp} label="Avg order value" value={formatMoney(data.kpis.avgOrderValueCents, data.currency)} deltaPct={data.kpis.avgOrderValueDeltaPct} />
-            <KpiCard
-              icon={Repeat2}
-              label="Repeat customers"
-              value={data.kpis.repeatCustomerRatePct !== null ? `${data.kpis.repeatCustomerRatePct.toFixed(0)}%` : "—"}
-              deltaPct={null}
-            />
+            {cartPlan ? (
+              <KpiCard
+                icon={BarChart3}
+                label="Avg items / order"
+                value={data.kpis.orderCount > 0 ? (data.topItems.reduce((s, i) => s + i.quantitySold, 0) / data.kpis.orderCount).toFixed(1) : "—"}
+                deltaPct={null}
+              />
+            ) : (
+              <KpiCard
+                icon={Repeat2}
+                label="Repeat customers"
+                value={data.kpis.repeatCustomerRatePct !== null ? `${data.kpis.repeatCustomerRatePct.toFixed(0)}%` : "—"}
+                deltaPct={null}
+              />
+            )}
           </div>
 
           {/* Revenue trend */}
@@ -407,10 +455,20 @@ export function AnalyticsDashboard({
             </ResponsiveContainer>
           </SectionCard>
 
-          {/* Peak hours */}
-          <SectionCard title="Peak hours" sub="When orders come in, by day and hour">
-            <PeakHoursHeatmap cells={data.peakHours} />
-          </SectionCard>
+          {/* Peak hours — full heatmap for table plan, simple ranked list for cart */}
+          {showFullAnalytics ? (
+            <SectionCard title="Peak hours" sub="When orders come in, by day and hour">
+              <PeakHoursHeatmap cells={data.peakHours} />
+            </SectionCard>
+          ) : (
+            <SectionCard title="Busiest hours" sub="When most orders come in">
+              {data.peakHours.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No data yet.</p>
+              ) : (
+                <BusiestHoursList cells={data.peakHours} />
+              )}
+            </SectionCard>
+          )}
 
           {/* AI insights — gated behind aiInsights feature flag */}
           {showAiInsights && <InsightsCard restaurantId={restaurantId} />}
