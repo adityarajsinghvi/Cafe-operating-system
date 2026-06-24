@@ -322,7 +322,7 @@ export function GuestCartProvider({
     const interval = setInterval(() => {
       if (document.visibilityState !== "visible") return;
       refreshOrders();
-    }, 8_000); // 8s — fast enough for live tracking, light enough for mobile
+    }, 60_000); // 60s safety net — realtime handles live updates; this catches missed events
 
     const onVisible = () => {
       if (document.visibilityState === "visible") refreshOrders();
