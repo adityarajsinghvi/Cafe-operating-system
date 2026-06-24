@@ -1,5 +1,5 @@
 export type RestaurantStatus = "trial" | "active" | "suspended";
-export type PlanTier = "cart" | "table";
+export type PlanTier = "menu" | "starter" | "pro" | "cart" | "table";
 export type MemberRole = "owner" | "manager" | "staff";
 export type ExtractionSource = "photo" | "pdf" | "url";
 export type ExtractionJobStatus =
@@ -67,6 +67,7 @@ export interface Database {
           sections_enabled: boolean;
           full_analytics_enabled: boolean;
           ai_insights_enabled: boolean;
+          plan_expires_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -95,6 +96,7 @@ export interface Database {
           sections_enabled?: boolean;
           full_analytics_enabled?: boolean;
           ai_insights_enabled?: boolean;
+          plan_expires_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };

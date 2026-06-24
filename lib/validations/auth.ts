@@ -31,6 +31,7 @@ export const createRestaurantSchema = z.object({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Use lowercase letters, numbers, and hyphens only",
     ),
+  plan: z.enum(["menu", "starter", "pro"]).default("starter"),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

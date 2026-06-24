@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { CreditCard, LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { signOutAction } from "@/lib/actions/auth";
@@ -14,15 +14,17 @@ const dashboardNavItems: Array<{
   label: string;
   href: string;
   flag?: keyof RestaurantFeatures;
+  icon?: React.ReactNode;
 }> = [
   { label: "Dashboard", href: "" },
-  { label: "Analytics",  href: "/analytics" },
+  { label: "Analytics",  href: "/analytics",  flag: "fullAnalytics" },
   { label: "Menu",       href: "/menu" },
-  { label: "Orders",     href: "/orders",   flag: "ordering" },
-  { label: "History",    href: "/history",  flag: "bills" },
-  { label: "Rewards",    href: "/rewards",  flag: "loyalty" },
+  { label: "Orders",     href: "/orders",     flag: "ordering" },
+  { label: "History",    href: "/history",    flag: "bills" },
+  { label: "Rewards",    href: "/rewards",    flag: "loyalty" },
   { label: "Customers",  href: "/customers" },
   { label: "Settings",   href: "/settings" },
+  { label: "Billing",    href: "/billing",    icon: <CreditCard className="h-3.5 w-3.5 opacity-60" /> },
 ];
 
 function NavLink({
@@ -96,7 +98,10 @@ export function DashboardNav({
             mode={mode}
             onNavigate={onNavigate}
           >
-            {item.label}
+            <span className="flex items-center gap-2">
+              {item.icon}
+              {item.label}
+            </span>
           </NavLink>
         ))}
       </nav>

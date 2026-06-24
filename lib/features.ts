@@ -2,6 +2,7 @@ import type { PlanTier, Restaurant } from "@/types/database";
 
 export interface RestaurantFeatures {
   plan: PlanTier;
+  planLabel: string;
   // Order flow
   ordering: boolean;
   tokenDisplay: boolean;
@@ -16,26 +17,100 @@ export interface RestaurantFeatures {
   aiInsights: boolean;
 }
 
+const PLAN_LABELS: Record<PlanTier, string> = {
+  menu:    "Menu",
+  starter: "Starter",
+  pro:     "Pro",
+  // legacy DB values — treated as their nearest equivalent
+  cart:    "Starter",
+  table:   "Pro",
+};
+
 /**
- * Derives the complete feature set for a restaurant from its DB row.
+ * menu    (₹999/yr)  — digital menu + rewards + customer DB only
+ * starter (₹1499/yr) — full ordering + token + UPI + today dashboard + rewards
+ * pro     (₹2499/yr) — everything including full analytics + AI insights
  *
- * "table" plan: every feature is on by default (legacy sit-down cafes — nothing breaks).
- * "cart" plan: every advanced feature is off by default; individual flags can turn them on.
+ * Legacy "cart" → treated as starter, "table" → treated as pro.
  */
 export function getFeatures(r: Restaurant): RestaurantFeatures {
-  const plan: PlanTier = r.plan ?? "cart";
-  const isTable = plan === "table";
+  const plan: PlanTier = r.plan ?? "menu";
+
+  const isStarter = plan === "starter" || plan === "cart";
+  const isPro     = plan === "pro"     || plan === "table";
 
   return {
     plan,
-    ordering:        r.ordering_enabled         ?? true,
-    tokenDisplay:    r.token_display_enabled     ?? false,
-    smartSuggestions: r.smart_suggestions_enabled ?? false,
-    serviceRequests: r.service_requests_enabled  || isTable,
-    loyalty:         r.rewards_enabled           ?? false,
-    bills:           r.bills_enabled             || isTable,
-    sections:        r.sections_enabled          || isTable,
-    fullAnalytics:   r.full_analytics_enabled    || isTable,
-    aiInsights:      r.ai_insights_enabled       || isTable,
+    planLabel: PLAN_LABELS[plan] ?? "Menu",
+
+    // Ordering + token: starter and pro only
+    ordering:     (r.ordering_enabled ?? false) || isStarter || isPro,
+    tokenDisplay: (r.token_display_enabled ?? false) || isStarter || isPro,
+
+    // Always off (hidden globally)
+    smartSuggestions: false,
+
+    // Service requests + sections: pro only
+    serviceRequests: (r.service_requests_enabled ?? false) || isPro,
+    sections:        (r.sections_enabled ?? false)         || isPro,
+
+    // Loyalty + customer DB: all plans
+    loyalty: r.rewards_enabled ?? true,
+    bills:   r.bills_enabled   ?? true,
+
+    // Analytics: pro only
+    fullAnalytics: (r.full_analytics_enabled ?? false) || isPro,
+    aiInsights:    (r.ai_insights_enabled    ?? false) || isPro,
   };
 }
+
+export const PLAN_PRICING: Record<"menu" | "starter" | "pro", { label: string; price: number; description: string }> = {
+  menu: {
+    label:       "Menu",
+    price:       999,
+    description: "Digital menu, rewards & customer database",
+  },
+  starter: {
+    label:       "Starter",
+    price:       1499,
+    description: "Full ordering, token queue, UPI payments & rewards",
+  },
+  pro: {
+    label:       "Pro",
+    price:       2499,
+    description: "Everything in Starter plus full analytics & AI insights",
+  },
+};
+
+export const PLAN_FEATURES: Record<"menu" | "starter" | "pro", { text: string; included: boolean }[]> = {
+  menu: [
+    { text: "Digital menu (QR code)", included: true  },
+    { text: "Rewards & loyalty",      included: true  },
+    { text: "Customer database",      included: true  },
+    { text: "Online ordering",        included: false },
+    { text: "Token queue system",     included: false },
+    { text: "UPI payment collection", included: false },
+    { text: "Analytics dashboard",    included: false },
+    { text: "AI menu insights",       included: false },
+  ],
+  starter: [
+    { text: "Digital menu (QR code)", included: true  },
+    { text: "Rewards & loyalty",      included: true  },
+    { text: "Customer database",      included: true  },
+    { text: "Online ordering",        included: true  },
+    { text: "Token queue system",     included: true  },
+    { text: "UPI payment collection", included: true  },
+    { text: "Analytics dashboard",    included: false },
+    { text: "AI menu insights",       included: false },
+  ],
+  pro: [
+    { text: "Digital menu (QR code)", included: true },
+    { text: "Rewards & loyalty",      included: true },
+    { text: "Customer database",      included: true },
+    { text: "Online ordering",        included: true },
+    { text: "Token queue system",     included: true },
+    { text: "UPI payment collection", included: true },
+    { text: "Analytics dashboard",    included: true },
+    { text: "AI menu insights",       included: true },
+  ],
+};

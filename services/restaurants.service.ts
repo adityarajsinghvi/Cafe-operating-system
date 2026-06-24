@@ -131,7 +131,7 @@ export async function claimRestaurantOwnership(restaurantId: string) {
   return !error;
 }
 
-export async function createRestaurantForUser(name: string, slug: string) {
+export async function createRestaurantForUser(name: string, slug: string, plan: "menu" | "starter" | "pro" = "starter") {
   const ctx = await requireAuth();
   if (!ctx) {
     return { error: "You must be signed in to create a restaurant" as const };
@@ -139,9 +139,13 @@ export async function createRestaurantForUser(name: string, slug: string) {
 
   const { admin, user } = ctx;
 
+  // Set plan expiry 1 year from today
+  const expiresAt = new Date();
+  expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+
   const { data: restaurant, error } = await admin
     .from("restaurants")
-    .insert({ name, slug })
+    .insert({ name, slug, plan, plan_expires_at: expiresAt.toISOString() })
     .select("id")
     .single();
 

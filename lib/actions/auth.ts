@@ -92,6 +92,7 @@ export async function createRestaurantAction(
   const parsed = createRestaurantSchema.safeParse({
     name: formData.get("name"),
     slug: formData.get("slug"),
+    plan: formData.get("plan"),
   });
 
   if (!parsed.success) {
@@ -110,6 +111,7 @@ export async function createRestaurantAction(
   const result = await createRestaurantForUser(
     parsed.data.name,
     parsed.data.slug,
+    parsed.data.plan,
   );
 
   if ("error" in result) {
