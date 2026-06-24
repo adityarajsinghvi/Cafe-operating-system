@@ -525,6 +525,10 @@ export interface Database {
         Args: Record<string, never>;
         Returns: boolean;
       };
+      get_next_token: {
+        Args: { p_restaurant_id: string; p_date?: string };
+        Returns: number;
+      };
     };
     Enums: {
       restaurant_status: RestaurantStatus;

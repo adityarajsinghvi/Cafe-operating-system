@@ -174,18 +174,12 @@ export async function createGuestOrder(
   // Generate next token for today if required
   let tokenNumber: number | null = null;
   if (needsToken) {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const { data: lastToken } = await admin
-      .from("orders")
-      .select("token_number")
-      .eq("restaurant_id", session.restaurantId)
-      .gte("created_at", todayStart.toISOString())
-      .not("token_number", "is", null)
-      .order("token_number", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    tokenNumber = ((lastToken as { token_number?: number | null } | null)?.token_number ?? 0) + 1;
+    const { data: nextToken, error: tokenError } = await admin
+      .rpc("get_next_token", { p_restaurant_id: session.restaurantId });
+    if (tokenError || nextToken == null) {
+      return { error: "Failed to generate token number. Please try again." };
+    }
+    tokenNumber = nextToken as number;
   }
 
   const initialStatus = upiId ? ("pending_payment" as const) : ("pending" as const);
