@@ -302,19 +302,34 @@ export async function listGuestSessionOrders(sessionToken: string) {
     itemsByOrder.set(item.order_id, existing);
   }
 
-  // Count how many confirmed/pending orders exist in this restaurant ahead of the guest
-  const { count: queueAhead } = await admin
-    .from("orders")
-    .select("*", { count: "exact", head: true })
-    .eq("restaurant_id", session.restaurantId)
-    .in("status", ["pending", "confirmed"]);
+  // Count orders ahead of the guest: only orders with a lower token number that
+  // are still being processed. Excludes the guest's own orders entirely.
+  const mappedOrders = orders.map((order) =>
+    mapOrder(order, itemsByOrder.get(order.id) ?? []),
+  );
+
+  const guestMinToken = mappedOrders
+    .filter((o) => o.status === "confirmed" || o.status === "pending")
+    .map((o) => o.tokenNumber)
+    .filter((t): t is number => t !== null)
+    .sort((a, b) => a - b)[0] ?? null;
+
+  let queueAhead = 0;
+  if (guestMinToken !== null) {
+    const { count } = await admin
+      .from("orders")
+      .select("*", { count: "exact", head: true })
+      .eq("restaurant_id", session.restaurantId)
+      .in("status", ["pending", "confirmed"])
+      .lt("token_number", guestMinToken)
+      .not("token_number", "is", null);
+    queueAhead = count ?? 0;
+  }
 
   return {
-    orders: orders.map((order) =>
-      mapOrder(order, itemsByOrder.get(order.id) ?? []),
-    ),
+    orders: mappedOrders,
     billPaymentStatus: session.billPaymentStatus,
-    queueAhead: queueAhead ?? 0,
+    queueAhead,
   };
 }
 
