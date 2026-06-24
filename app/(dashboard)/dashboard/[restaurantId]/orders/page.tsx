@@ -1,5 +1,7 @@
 import { OrderBoard } from "@/components/dashboard/order-board";
 import { ServiceRequestPanel } from "@/components/dashboard/service-request-panel";
+import { TokenQueueStrip } from "@/components/dashboard/token-queue-strip";
+import { getFeatures } from "@/lib/features";
 import {
   listOpenServiceRequests,
   listRestaurantOrders,
@@ -8,7 +10,7 @@ import { getRestaurantById } from "@/services/restaurants.service";
 import { archiveExpiredTableSessions } from "@/services/tables.service";
 import type { OrderStatus } from "@/types/order";
 
-const ACTIVE_STATUSES: OrderStatus[] = ["pending", "confirmed"];
+const ACTIVE_STATUSES: OrderStatus[] = ["pending_payment", "pending", "confirmed"];
 
 export default async function OrdersPage({
   params,
@@ -23,6 +25,8 @@ export default async function OrdersPage({
     listRestaurantOrders(restaurantId, { status: ACTIVE_STATUSES }),
     listOpenServiceRequests(restaurantId),
   ]);
+
+  const features = restaurant ? getFeatures(restaurant) : null;
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
@@ -48,6 +52,13 @@ export default async function OrdersPage({
           Orders update live — no need to refresh
         </div>
       </div>
+
+      {features?.tokenDisplay && (
+        <TokenQueueStrip
+          restaurantId={restaurantId}
+          initialOrders={orders ?? []}
+        />
+      )}
 
       <ServiceRequestPanel
         restaurantId={restaurantId}

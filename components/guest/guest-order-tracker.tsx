@@ -149,6 +149,13 @@ function OrderDetail({
         <UpiPaymentPanel order={order} upiId={upiId} currency={currency} />
       )}
 
+      {order.tokenNumber !== null && order.status !== "pending_payment" && (
+        <div className="flex items-center justify-center gap-2 rounded-2xl border border-border/60 bg-muted/40 px-4 py-3">
+          <span className="text-2xl font-black tabular-nums text-foreground">#{order.tokenNumber}</span>
+          <span className="text-sm text-muted-foreground">— your token number</span>
+        </div>
+      )}
+
       {order.status === "confirmed" && (
         <div className="rounded-2xl bg-amber-500/15 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:text-amber-200">
           {meta.emoji} The kitchen is on it!
@@ -353,6 +360,8 @@ export function GuestOrderTracker({
                 <p className="truncate text-xs text-muted-foreground">
                   {trackableOrders.length > 1
                     ? `${trackableOrders.length} active orders`
+                    : pillOrder.tokenNumber !== null
+                    ? `Token #${pillOrder.tokenNumber} · ${formatOrderTotal(pillOrder.subtotalCents, currency)}`
                     : `${pillOrder.itemCount} items · ${formatOrderTotal(pillOrder.subtotalCents, currency)}`}
                 </p>
                 {trackableOrders.length === 1 && (
