@@ -598,6 +598,8 @@ export async function updateRestaurantSettings(
     smartSuggestionsEnabled?: boolean;
     orderingEnabled?: boolean;
     rewardsEnabled?: boolean;
+    upiId?: string;
+    tokenDisplayEnabled?: boolean;
   },
 ) {
   const ctx = await requireRestaurantAccess(restaurantId);
@@ -611,6 +613,8 @@ export async function updateRestaurantSettings(
     smart_suggestions_enabled?: boolean;
     ordering_enabled?: boolean;
     rewards_enabled?: boolean;
+    upi_id?: string | null;
+    token_display_enabled?: boolean;
   } = {};
   if (updates.name !== undefined) patch.name = updates.name.trim();
   if (updates.description !== undefined) patch.description = updates.description;
@@ -619,6 +623,8 @@ export async function updateRestaurantSettings(
   if (updates.smartSuggestionsEnabled !== undefined) patch.smart_suggestions_enabled = updates.smartSuggestionsEnabled;
   if (updates.orderingEnabled !== undefined) patch.ordering_enabled = updates.orderingEnabled;
   if (updates.rewardsEnabled !== undefined) patch.rewards_enabled = updates.rewardsEnabled;
+  if (updates.upiId !== undefined) patch.upi_id = updates.upiId.trim() || null;
+  if (updates.tokenDisplayEnabled !== undefined) patch.token_display_enabled = updates.tokenDisplayEnabled;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (ctx.admin as any)

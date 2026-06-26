@@ -3,6 +3,7 @@
 import {
   Copy,
   ImagePlus,
+  IndianRupee,
   Loader2,
   Pencil,
   Plus,
@@ -51,6 +52,8 @@ export function SettingsPanel({
   rewardsEnabled,
   orderingEnabled,
   plan,
+  upiId,
+  tokenDisplayEnabled,
   tables,
 }: {
   restaurantId: string;
@@ -64,10 +67,13 @@ export function SettingsPanel({
   rewardsEnabled: boolean;
   orderingEnabled: boolean;
   plan: string;
+  upiId: string;
+  tokenDisplayEnabled: boolean;
   tables: RestaurantTable[];
 }) {
   const isMenuPlan = plan === "menu";
   const [settingsMessage, setSettingsMessage] = useState<string | null>(null);
+  const [upiError, setUpiError] = useState<string | null>(null);
   const [tableMessage, setTableMessage] = useState<string | null>(null);
   const [isSavingSettings, startSaveSettings] = useTransition();
   const [isUploadingLogo, startUploadLogo] = useTransition();
@@ -93,6 +99,14 @@ export function SettingsPanel({
 
   function handleSettingsSubmit(formData: FormData) {
     setSettingsMessage(null);
+    setUpiError(null);
+
+    const upi = formData.get("upiId")?.toString().trim() ?? "";
+    if (upi && !/^[\w.\-]{2,256}@[a-zA-Z]{2,64}$/.test(upi)) {
+      setUpiError("Enter a valid UPI ID, e.g. cafename@upi");
+      return;
+    }
+
     startSaveSettings(async () => {
       const result = await updateSettingsAction(restaurantId, formData);
       setSettingsMessage(result.error ?? result.success ?? null);
@@ -284,6 +298,49 @@ export function SettingsPanel({
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     Let guests add items to a cart and place orders from the table QR menu. Turn
                     this off to show a read-only digital menu only.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {!isMenuPlan && (
+              <div className="space-y-2 rounded-xl border border-border bg-muted/30 p-4">
+                <Label htmlFor="upiId" className="flex items-center gap-1.5 font-medium">
+                  <IndianRupee className="h-4 w-4" />
+                  UPI ID for payment collection
+                </Label>
+                <Input
+                  id="upiId"
+                  name="upiId"
+                  defaultValue={upiId}
+                  placeholder="cafename@upi"
+                />
+                {upiError ? (
+                  <p className="text-xs text-destructive">{upiError}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Guests pay via this UPI ID when placing an order. Leave blank to skip
+                    online payment and only show a token number.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {!isMenuPlan && (
+              <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
+                <input
+                  type="checkbox"
+                  id="tokenDisplayEnabled"
+                  name="tokenDisplayEnabled"
+                  defaultChecked={tokenDisplayEnabled}
+                  className="mt-0.5 h-4 w-4 cursor-pointer accent-primary"
+                />
+                <div>
+                  <Label htmlFor="tokenDisplayEnabled" className="cursor-pointer font-medium">
+                    🎫 Token queue display
+                  </Label>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Show guests a token number and live queue position after they order.
                   </p>
                 </div>
               </div>

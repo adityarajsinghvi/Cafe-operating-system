@@ -202,6 +202,10 @@ export async function updateSettingsAction(
   const smartSuggestionsEnabled = formData.get("smartSuggestionsEnabled") === "on";
   const orderingEnabled = formData.get("orderingEnabled") === "on";
   const rewardsEnabled = formData.get("rewardsEnabled") === "on";
+  const upiId = formData.get("upiId")?.toString();
+  const tokenDisplayEnabled = formData.has("tokenDisplayEnabled")
+    ? formData.get("tokenDisplayEnabled") === "on"
+    : undefined;
 
   const result = await updateRestaurantSettings(restaurantId, {
     name: name ?? undefined,
@@ -210,6 +214,8 @@ export async function updateSettingsAction(
     smartSuggestionsEnabled,
     orderingEnabled,
     rewardsEnabled,
+    upiId: upiId ?? undefined,
+    tokenDisplayEnabled,
   });
 
   if ("error" in result && result.error) {

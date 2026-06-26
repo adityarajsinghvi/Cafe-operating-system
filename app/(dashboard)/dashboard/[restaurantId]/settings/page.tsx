@@ -40,6 +40,8 @@ export default async function SettingsPage({
         rewardsEnabled={(restaurant as any).rewards_enabled ?? false}
         orderingEnabled={(restaurant as any).ordering_enabled ?? true}
         plan={(restaurant as any).plan ?? "menu"}
+        upiId={(restaurant as any).upi_id ?? ""}
+        tokenDisplayEnabled={(restaurant as any).token_display_enabled ?? true}
         tables={tables ?? []}
       />
     </div>
